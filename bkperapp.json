@@ -20,31 +20,9 @@
     "TRANSACTION_UPDATED"
   ],
   "propertiesSchema": {
-    "group": {
-      "keys": [
-        "tax_excluded",
-        "tax_included",
-        "tax_description"
-      ],
-      "values": [
-        "${transaction.description}",
-        "${account.name}"
-      ]
-    },
     "account": {
       "keys": [
-        "tax_rate",
-        "tax_description"
-      ],
-      "values": [
-        "${transaction.description}",
-        "${account.name}"
-      ]
-    },
-    "transaction": {
-      "keys": [
-        "tax_round",
-        "tax_amount"
+        "sub_ledger"
       ]
     }
   }
