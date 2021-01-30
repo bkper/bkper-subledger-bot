@@ -1,11 +1,15 @@
 import 'source-map-support/register'
 import { HttpFunction } from '@google-cloud/functions-framework/build/src/functions';
 import { Bkper } from 'bkper';
-import EventHandlerTransactionDeleted from './EventHandlerTransactionDeleted';
-import EventHandlerTransactionPosted from "./EventHandlerTransactionPosted";
+import { EventHandlerTransactionDeleted } from './EventHandlerTransactionDeleted';
 import { Request, Response } from 'express';
 import express = require('express');
 import httpContext = require('express-http-context');
+import { EventHandlerTransactionChecked } from './EventHandlerTransactionChecked';
+import { EventHandlerTransactionUpdated } from './EventHandlerTransactionUpdated';
+import { EventHandlerTransactionRestored } from './EventHandlerTransactionRestored';
+import { EventHandlerGroupCreatedOrUpdated } from './EventHandlerGroupCreatedOrUpdated';
+import { EventHandlerGroupDeleted } from './EventHandlerGroupDeleted';
 
 require('dotenv').config()
 
@@ -39,21 +43,29 @@ async function handleEvent(req: Request, res: Response) {
     console.log(`Received ${event.type} event from ${event.user.username}...`)
 
     switch (event.type) {
-      case 'TRANSACTION_POSTED':
-        result.result = await new EventHandlerTransactionPosted().handleEvent(event);
+      case 'TRANSACTION_CHECKED':
+        result.result = await new EventHandlerTransactionChecked().handleEvent(event);
+        break;
+      case 'TRANSACTION_UPDATED':
+        result.result = await new EventHandlerTransactionUpdated().handleEvent(event);
         break;
       case 'TRANSACTION_DELETED':
         result.result = await new EventHandlerTransactionDeleted().handleEvent(event);
         break;
       case 'TRANSACTION_RESTORED':
-        result.result = await new EventHandlerTransactionPosted().handleEvent(event);
+        result.result = await new EventHandlerTransactionRestored().handleEvent(event);
         break;
-      case 'TRANSACTION_RESTORED':
-        result.result = await new EventHandlerTransactionPosted().handleEvent(event);
+      case 'GROUP_CREATED':
+        result.result = await new EventHandlerGroupCreatedOrUpdated().handleEvent(event);
         break;
-      case 'TRANSACTION_UPDATED':
-        await new EventHandlerTransactionDeleted().handleEvent(event)
-        result.result = await new EventHandlerTransactionPosted().handleEvent(event);
+      case 'GROUP_DELETED':
+        result.result = await new EventHandlerGroupDeleted().handleEvent(event);
+        break;
+      case 'GROUP_UPDATED':
+        result.result = await new EventHandlerGroupCreatedOrUpdated().handleEvent(event);
+        break;
+      case 'GROUP_DELETED':
+        result.result = await new EventHandlerGroupCreatedOrUpdated().handleEvent(event);
         break;
     }
 

@@ -1,24 +1,36 @@
-import { Account, Book, Bkper, Group } from "bkper";
+import { AccountType, Bkper, Book, Group } from "bkper";
+import { SUB_PARENT_BOOK_PROP } from "./constants";
 
-export default abstract class EventHandler {
+export abstract class EventHandler {
 
-  protected abstract processTransaction(book: Book, transaction: bkper.Transaction): Promise<string[] | string | boolean>;
-  
-  async handleEvent(event: bkper.Event): Promise<string[] | string | boolean> {
+  protected abstract processObject(childBook: Book, parentBook: Book, event: bkper.Event): Promise<string>;
+
+  async handleEvent(event: bkper.Event): Promise<string | boolean> {
     let bookId = event.bookId;
-    let operation = event.data.object as bkper.TransactionOperation;
-    let transaction = operation.transaction;
-    var book = await Bkper.getBook(bookId);
+    let childBook = await Bkper.getBook(bookId);
+    let parentBookId = childBook.getProperty(SUB_PARENT_BOOK_PROP);
 
-    if (!transaction.posted) {
+    if (parentBookId == null || parentBookId == '') {
+      return `Please set the "${SUB_PARENT_BOOK_PROP}" property of this book, with the parent book id.`
+    }
+    let parentBook = await Bkper.getBook(parentBookId);
+    let response = await this.processObject(childBook, parentBook, event);
+    if (response == null || response == '') {
       return false;
     }
-
-    return this.processTransaction(book, transaction);
+    return response;
   }
 
-  protected getId(taxTag: string, transaction: bkper.Transaction, accountOrGroup: Account | Group) {
-    return `${taxTag}_${transaction.id}_${accountOrGroup.getId()}`;
+  protected async getGroupAccountType(group: Group): Promise<AccountType> {
+    let accounts = await group.getAccounts();
+    for (const account of accounts) {
+      return account.getType();
+    }
+    return AccountType.ASSET;
+  }
+
+  protected buildBookAnchor(book: Book) {
+    return `<a href='https://app.bkper.com/b/#transactions:bookId=${book.getId()}'>${book.getName()}</a>`;
   }
 
 }

@@ -14,10 +14,13 @@
   "scopes": ["https://www.googleapis.com/auth/userinfo.email"],
   "webhookUrl": "https://us-central1-bkper-tax-trigger.cloudfunctions.net/prod",
   "events": [
-    "TRANSACTION_POSTED",
+    "TRANSACTION_CHECKED",
+    "TRANSACTION_UPDATED",
     "TRANSACTION_DELETED",
     "TRANSACTION_RESTORED",
-    "TRANSACTION_UPDATED"
+    "GROUP_CREATED",
+    "GROUP_UPDATED",
+    "GROUP_DELETED"
   ],
   "propertiesSchema": {
     "account": {
