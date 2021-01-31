@@ -1,7 +1,7 @@
 {
   "id": "subledger-bot",
   "name": "Subledger Bot",
-  "description": "Connect Books into Ledger-Subledger tree relationship",
+  "description": "Connect books into Ledger-Subledger relationship",
   "logoUrl": "https://static.thenounproject.com/png/2318601-200.png",
   "website": "https://bkper.com/apps/subledger-bot",
   "ownerName": "Bkper",
