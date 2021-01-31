@@ -18,21 +18,22 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
     let parentCreditAccount = await this.getParentAccount(parentBook, childCreditAccount);
     let parentDebitAccount = await this.getParentAccount(parentBook, childDebitAccount);
 
+    if (parentCreditAccount == null || parentDebitAccount == null) {
+      return null;
+    }
 
-    let bookAnchor = super.buildBookAnchor(parentBook);
-
-    await this.updateParentTransaction(parentBook, parentTransaction, childTransaction, childCreditAccount, childDebitAccount);
+    await this.updateParentTransaction(parentBook, parentTransaction, childTransaction, parentCreditAccount, parentDebitAccount);
 
     let amountFormatted = parentBook.formatValue(parentTransaction.getAmount())
 
     let record = `EDITED: ${parentTransaction.getDateFormatted()} ${amountFormatted} ${await parentTransaction.getCreditAccountName()} ${await parentTransaction.getDebitAccountName()} ${parentTransaction.getDescription()}`;
 
-    return `${bookAnchor}: ${record}`;
+    return `${parentBookAnchor}: ${record}`;
   }
 
 
 
-  private async updateParentTransaction(parentBook: Book, parentTransaction: Transaction, childTransaction: bkper.Transaction, childCreditAccount: Account, childDebitAccount: Account) {
+  private async updateParentTransaction(parentBook: Book, parentTransaction: Transaction, childTransaction: bkper.Transaction, parentCreditAccount: Account, parentDebitAccount: Account) {
     if (parentTransaction.isChecked()) {
       await parentTransaction.uncheck();
     }
@@ -40,11 +41,11 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
     parentTransaction
       .setDate(childTransaction.date)
       .setProperties(childTransaction.properties)
-      .setProperty('sub_credit_account', childCreditAccount.getName())
-      .setProperty('sub_debit_account', childDebitAccount.getName())
+      .setProperty('sub_credit_account', parentCreditAccount.getName())
+      .setProperty('sub_debit_account', parentDebitAccount.getName())
       .setAmount(childTransaction.amount)
-      .setCreditAccount(childCreditAccount)
-      .setDebitAccount(childDebitAccount)
+      .setCreditAccount(parentCreditAccount)
+      .setDebitAccount(parentDebitAccount)
       .setDescription(childTransaction.description)
       .addRemoteId(childTransaction.id);
 
@@ -54,8 +55,8 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
       urls = [];
     }
 
-    if (parentTransaction.getUrls()) {
-      urls = urls.concat(parentTransaction.getUrls());
+    if (childTransaction.urls) {
+      urls = childTransaction.urls;
     }
 
     if (childTransaction.files) {

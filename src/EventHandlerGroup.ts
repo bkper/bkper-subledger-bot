@@ -1,4 +1,5 @@
 import { Account, AccountType, Book, Group } from "bkper";
+import { markAsUntransferable } from "worker_threads";
 import { SUB_PARENT_ACCOUNT_PROP } from "./constants";
 import { EventHandler } from "./EventHandler";
 
@@ -7,7 +8,13 @@ export abstract class EventHandlerGroup extends EventHandler {
   protected async processObject(childBook: Book, parentBook: Book, event: bkper.Event): Promise<string> {
     let childGroup = event.data.object as bkper.Group;
 
-    let parentAccount = await parentBook.getAccount(childGroup.properties[SUB_PARENT_ACCOUNT_PROP]);
+    const subParentAccountName = childGroup.properties[SUB_PARENT_ACCOUNT_PROP];
+
+    if (!subParentAccountName) {
+      return null;
+    }
+
+    let parentAccount = await parentBook.getAccount(subParentAccountName);
 
     if (parentAccount == null && (event.data.previousAttributes && event.data.previousAttributes[SUB_PARENT_ACCOUNT_PROP])) {
       parentAccount = await parentBook.getAccount(event.data.previousAttributes[SUB_PARENT_ACCOUNT_PROP]);
