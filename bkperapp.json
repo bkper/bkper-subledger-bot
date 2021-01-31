@@ -12,7 +12,7 @@
   "deprecated": false,
   "clientId": "1090047264364-8d3kjg91okm80vifv3rn4crgoqr54k2j.apps.googleusercontent.com",
   "scopes": ["https://www.googleapis.com/auth/userinfo.email"],
-  "webhookUrl": "https://us-central1-bkper-tax-trigger.cloudfunctions.net/prod",
+  "webhookUrl": "https://us-central1-bkper-subledger-bot.cloudfunctions.net/prod",
   "events": [
     "TRANSACTION_CHECKED",
     "TRANSACTION_UPDATED",
