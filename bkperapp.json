@@ -23,9 +23,14 @@
     "GROUP_DELETED"
   ],
   "propertiesSchema": {
-    "account": {
+    "book": {
       "keys": [
-        "sub_ledger"
+        "sub_parent_book"
+      ]
+    },
+    "group": {
+      "keys": [
+        "sub_parent_account"
       ]
     }
   }
