@@ -1,7 +1,7 @@
 
 The Subledger Bot connects child books with parent ones, rolling up the Subledger transactions into the parent General Ledger.
 
-Groups in the Subledger become accounts in the general ledger, allowing the Subledger a more granular control as well as its user access to only a subset of accounts.
+Accounts or Groups in the Subledger are associated to Accounts in the general ledger, allowing the Subledger a more granular control as well as its user access to only a subset of accounts.
 
 <p align="center">
   <img src='https://docs.google.com/drawings/d/e/2PACX-1vTWp1BE5LOoDhu93XiUGg4pverXcHMVQXHyBrd9Q2scAtxixwnlXDI1dioPCswV9VGZW_5gRMPnq1K3/pub?w=3084&h=2676' alt='Bkper Tax Bot in action'/>
@@ -12,7 +12,7 @@ A Subledger may contain, for example, only the details of the [Accounts Receivab
 
 ## Configuration
 
-The Subledger bot is triggered on ```TRANSACTION_CHECKED``` event, and roll the transaction up to the parent book.
+The Subledger bot is triggered on ```TRANSACTION_POSTED``` event, and roll the transaction up to the parent book.
 
 
 ### Book property
@@ -20,7 +20,11 @@ The Subledger bot is triggered on ```TRANSACTION_CHECKED``` event, and roll the 
 - ```parent_book```: The id of the parent book, found on ```bookId``` param of the url.
 
 
-### Account and Group properties
+### Account property
+
+- ```parent_account```: The name of the parent account to bind the child account to.
+
+### Group property
 
 - ```parent_account```: The name of the parent account to bind the child group to.
 
