@@ -12,7 +12,7 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
     if (parentTransaction.isPosted() && !parentTransaction.isChecked()) {
       await parentTransaction.check();
       return await this.buildFoundResponse(parentBook, parentTransaction);
-    } else if (!parentTransaction.isPosted() && this.isReadyToPost(parentTransaction)) {
+    } else if (!parentTransaction.isPosted() && await this.isReadyToPost(parentTransaction)) {
       await parentTransaction.post();
       await parentTransaction.check();
       return await this.buildFoundResponse(parentBook, parentTransaction);
@@ -51,7 +51,7 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
 
     let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${parentCreditAccount ? parentCreditAccount.getName() : ''} ${parentDebitAccount ? parentDebitAccount.getName() : ''} ${newTransaction.getDescription()}`;
 
-    if (this.isReadyToPost(newTransaction)) {
+    if (await this.isReadyToPost(newTransaction)) {
       await newTransaction.post();
       await newTransaction.check();
     } else {

@@ -69,8 +69,8 @@ export abstract class EventHandlerTransaction extends EventHandler {
     return null;
   } 
 
-  protected isReadyToPost(newTransaction: Transaction) {
-    return newTransaction.getCreditAccount() != null && newTransaction.getDebitAccount() != null && newTransaction.getAmount() != null;
+  protected async isReadyToPost(newTransaction: Transaction) {
+    return await newTransaction.getCreditAccount() != null && await newTransaction.getDebitAccount() != null && newTransaction.getAmount() != null;
   }
 
   protected abstract getTransactionQuery(childTransaction: bkper.Transaction): string;

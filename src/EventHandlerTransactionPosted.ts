@@ -9,7 +9,7 @@ export class EventHandlerTransactionPosted extends EventHandlerTransaction {
   }
 
   protected async connectedTransactionFound(childBook: Book, parentBook: Book, childTransaction: bkper.Transaction, parentTransaction: Transaction): Promise<string> {
-    if (!parentTransaction.isPosted() && this.isReadyToPost(parentTransaction)) {
+    if (!parentTransaction.isPosted() && await this.isReadyToPost(parentTransaction)) {
       await parentTransaction.post();
       return await this.buildFoundResponse(parentBook, parentTransaction);
     }
@@ -44,9 +44,9 @@ export class EventHandlerTransactionPosted extends EventHandlerTransaction {
       .setDescription(childTransaction.description)
       .addRemoteId(childTransaction.id);
 
-    let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${parentCreditAccount.getName()} ${parentDebitAccount.getName()} ${newTransaction.getDescription()}`;
+      let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${parentCreditAccount ? parentCreditAccount.getName() : ''} ${parentDebitAccount ? parentDebitAccount.getName() : ''} ${newTransaction.getDescription()}`;
 
-    if (this.isReadyToPost(newTransaction)) {
+    if (await this.isReadyToPost(newTransaction)) {
       await newTransaction.post();
     } else {
       newTransaction.setDescription(`${newTransaction.getCreditAccount() == null ? parentCreditAccount.getName() : ''} ${newTransaction.getDebitAccount() == null ? parentDebitAccount.getName() : ''} ${newTransaction.getDescription()}`.trim())
