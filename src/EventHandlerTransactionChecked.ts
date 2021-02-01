@@ -49,7 +49,7 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
       .setDescription(childTransaction.description)
       .addRemoteId(childTransaction.id);
 
-    let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${parentCreditAccount.getName()} ${parentDebitAccount.getName()} ${newTransaction.getDescription()}`;
+    let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${parentCreditAccount ? parentCreditAccount.getName() : ''} ${parentDebitAccount ? parentDebitAccount.getName() : ''} ${newTransaction.getDescription()}`;
 
     if (this.isReadyToPost(newTransaction)) {
       await newTransaction.post();
