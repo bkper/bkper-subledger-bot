@@ -14,10 +14,14 @@
   "scopes": ["https://www.googleapis.com/auth/userinfo.email"],
   "webhookUrl": "https://us-central1-bkper-subledger-bot.cloudfunctions.net/prod",
   "events": [
+    "TRANSACTION_POSTED",
     "TRANSACTION_CHECKED",
     "TRANSACTION_UPDATED",
     "TRANSACTION_DELETED",
     "TRANSACTION_RESTORED",
+    "ACCOUNT_CREATED",
+    "ACCOUNT_UPDATED",
+    "ACCOUNT_DELETED",    
     "GROUP_CREATED",
     "GROUP_UPDATED",
     "GROUP_DELETED"
@@ -25,12 +29,17 @@
   "propertiesSchema": {
     "book": {
       "keys": [
-        "sub_parent_book"
+        "parent_book"
       ]
     },
     "group": {
       "keys": [
-        "sub_parent_account"
+        "parent_account"
+      ]
+    },
+    "account": {
+      "keys": [
+        "parent_account"
       ]
     }
   }

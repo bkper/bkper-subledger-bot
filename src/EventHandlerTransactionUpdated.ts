@@ -1,5 +1,6 @@
 import { Account, Book, Transaction } from "bkper";
-import { AmountDescription, EventHandlerTransaction } from "./EventHandlerTransaction";
+import { EventHandlerTransaction } from "./EventHandlerTransaction";
+import { CHILD_CREDIT_ACCOUNT_PROP, CHILD_DEBIT_ACCOUNT_PROP } from "./constants";
 
 export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
 
@@ -41,8 +42,8 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
     parentTransaction
       .setDate(childTransaction.date)
       .setProperties(childTransaction.properties)
-      .setProperty('sub_credit_account', parentCreditAccount.getName())
-      .setProperty('sub_debit_account', parentDebitAccount.getName())
+      .setProperty(CHILD_CREDIT_ACCOUNT_PROP, parentCreditAccount.getName())
+      .setProperty(CHILD_DEBIT_ACCOUNT_PROP, parentDebitAccount.getName())
       .setAmount(childTransaction.amount)
       .setCreditAccount(parentCreditAccount)
       .setDebitAccount(parentDebitAccount)

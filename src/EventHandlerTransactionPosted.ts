@@ -1,30 +1,25 @@
 import { Account, Book, Transaction } from "bkper";
-import { CHILD_CREDIT_ACCOUNT_PROP, CHILD_DEBIT_ACCOUNT_PROP } from "./constants";
+import { CHILD_CREDIT_ACCOUNT_PROP, CHILD_DEBIT_ACCOUNT_PROP, PARENT_ACCOUNT_PROP } from "./constants";
 import { EventHandlerTransaction } from "./EventHandlerTransaction";
 
-export class EventHandlerTransactionChecked extends EventHandlerTransaction {
+export class EventHandlerTransactionPosted extends EventHandlerTransaction {
 
   protected getTransactionQuery(transaction: bkper.Transaction): string {
     return `remoteId:${transaction.id}`;
   }
 
   protected async connectedTransactionFound(childBook: Book, parentBook: Book, childTransaction: bkper.Transaction, parentTransaction: Transaction): Promise<string> {
-    if (parentTransaction.isPosted() && !parentTransaction.isChecked()) {
-      await parentTransaction.check();
-      return await this.buildFoundResponse(parentBook, parentTransaction);
-    } else if (!parentTransaction.isPosted() && this.isReadyToPost(parentTransaction)) {
+    if (!parentTransaction.isPosted() && this.isReadyToPost(parentTransaction)) {
       await parentTransaction.post();
-      await parentTransaction.check();
-      return await this.buildFoundResponse(parentBook, parentTransaction);
-    } else {
       return await this.buildFoundResponse(parentBook, parentTransaction);
     }
+    return null;
   }
 
   private async buildFoundResponse(parentBook: Book, parentTransaction: Transaction): Promise<string> {
     let bookAnchor = super.buildBookAnchor(parentBook);
     let amountFormatted = parentBook.formatValue(parentTransaction.getAmount());
-    let record = `CHECKED: ${parentTransaction.getDateFormatted()} ${amountFormatted} ${await parentTransaction.getCreditAccountName()} ${await parentTransaction.getDebitAccountName()} ${parentTransaction.getDescription()}`;
+    let record = `POSTED: ${parentTransaction.getDateFormatted()} ${amountFormatted} ${await parentTransaction.getCreditAccountName()} ${await parentTransaction.getDebitAccountName()} ${parentTransaction.getDescription()}`;
     return `${bookAnchor}: ${record}`;
   }
 
@@ -53,7 +48,6 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
 
     if (this.isReadyToPost(newTransaction)) {
       await newTransaction.post();
-      await newTransaction.check();
     } else {
       newTransaction.setDescription(`${newTransaction.getCreditAccount() == null ? parentCreditAccount.getName() : ''} ${newTransaction.getDebitAccount() == null ? parentDebitAccount.getName() : ''} ${newTransaction.getDescription()}`.trim())
       await newTransaction.create();
@@ -61,5 +55,6 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
 
     return `${parentBookAnchor}: ${record}`;
   }
+
 
 }

@@ -1,5 +1,5 @@
 import { Account, AccountType, Amount, Book, Group, Transaction } from "bkper";
-import { SUB_PARENT_ACCOUNT_PROP } from "./constants";
+import { PARENT_ACCOUNT_PROP } from "./constants";
 import { EventHandler } from "./EventHandler";
 
 export interface AmountDescription {
@@ -29,9 +29,27 @@ export abstract class EventHandlerTransaction extends EventHandler {
   }
 
   protected async getParentAccount(parentBook: Book, childAccount: Account): Promise<Account> {
+
+      let parentAccountName = childAccount.getProperty(PARENT_ACCOUNT_PROP);
+      if (parentAccountName) {
+        let parentAccount = await parentBook.getAccount(parentAccountName);
+        if (parentAccount == null) {
+          try {
+            parentAccount = await parentBook.newAccount()
+            .setName(parentAccountName)
+            .setType(childAccount.getType())
+            .create()
+          } catch (err) {
+            console.log(err)
+            return null;
+          }
+        }
+        return parentAccount;
+      }
+
     const childGroups = await childAccount.getGroups();
     for (const childGroup of childGroups) {
-      let parentAccountName = childGroup.getProperty(SUB_PARENT_ACCOUNT_PROP);
+      let parentAccountName = childGroup.getProperty(PARENT_ACCOUNT_PROP);
       if (parentAccountName) {
         let parentAccount = await parentBook.getAccount(parentAccountName);
         if (parentAccount == null) {
@@ -50,6 +68,10 @@ export abstract class EventHandlerTransaction extends EventHandler {
     }
     return null;
   } 
+
+  protected isReadyToPost(newTransaction: Transaction) {
+    return newTransaction.getCreditAccount() != null && newTransaction.getDebitAccount() != null && newTransaction.getAmount() != null;
+  }
 
   protected abstract getTransactionQuery(childTransaction: bkper.Transaction): string;
 
