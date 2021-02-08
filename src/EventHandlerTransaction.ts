@@ -1,5 +1,4 @@
 import { Account, AccountType, Amount, Book, Group, Transaction } from "bkper";
-import { PARENT_ACCOUNT_PROP } from "./constants";
 import { EventHandler } from "./EventHandler";
 
 export interface AmountDescription {
@@ -30,7 +29,7 @@ export abstract class EventHandlerTransaction extends EventHandler {
 
   protected async getParentAccount(parentBook: Book, childAccount: Account): Promise<Account> {
 
-      let parentAccountName = childAccount.getProperty(PARENT_ACCOUNT_PROP);
+      let parentAccountName = childAccount.getName();
       if (parentAccountName) {
         let parentAccount = await parentBook.getAccount(parentAccountName);
         if (parentAccount == null) {
@@ -49,7 +48,7 @@ export abstract class EventHandlerTransaction extends EventHandler {
 
     const childGroups = await childAccount.getGroups();
     for (const childGroup of childGroups) {
-      let parentAccountName = childGroup.getProperty(PARENT_ACCOUNT_PROP);
+      let parentAccountName = childGroup.getName();
       if (parentAccountName) {
         let parentAccount = await parentBook.getAccount(parentAccountName);
         if (parentAccount == null) {

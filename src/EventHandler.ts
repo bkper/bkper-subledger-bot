@@ -1,5 +1,5 @@
 import { AccountType, Bkper, Book, Group } from "bkper";
-import { PARENT_BOOK_PROP } from "./constants";
+import { PARENT_BOOK_ID_PROP } from "./constants";
 
 export abstract class EventHandler {
 
@@ -8,10 +8,10 @@ export abstract class EventHandler {
   async handleEvent(event: bkper.Event): Promise<string | boolean> {
     let bookId = event.bookId;
     let childBook = await Bkper.getBook(bookId);
-    let parentBookId = childBook.getProperty(PARENT_BOOK_PROP);
+    let parentBookId = childBook.getProperty(PARENT_BOOK_ID_PROP, 'parent_book');
 
     if (parentBookId == null || parentBookId == '') {
-      return `Please set the "${PARENT_BOOK_PROP}" property of this book, with the parent book id.`
+      throw `Please set the [${PARENT_BOOK_ID_PROP}] property of this book, with the parent book id.`
     }
     let parentBook = await Bkper.getBook(parentBookId);
     let response = await this.processObject(childBook, parentBook, event);

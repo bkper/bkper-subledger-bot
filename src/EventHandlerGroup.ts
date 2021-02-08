@@ -1,6 +1,4 @@
-import { Account, AccountType, Book, Group } from "bkper";
-import { markAsUntransferable } from "worker_threads";
-import { PARENT_ACCOUNT_PROP } from "./constants";
+import { Book, Group } from "bkper";
 import { EventHandler } from "./EventHandler";
 
 export abstract class EventHandlerGroup extends EventHandler {
@@ -8,32 +6,27 @@ export abstract class EventHandlerGroup extends EventHandler {
   protected async processObject(childBook: Book, parentBook: Book, event: bkper.Event): Promise<string> {
     let childGroup = event.data.object as bkper.Group;
 
-    const subParentAccountName = childGroup.properties[PARENT_ACCOUNT_PROP];
+    const parentGroupName = childGroup.name;
 
-    if (!subParentAccountName) {
+    if (!parentGroupName) {
       return null;
     }
 
-    let parentAccount = await parentBook.getAccount(subParentAccountName);
+    let parentGroup = await parentBook.getGroup(parentGroupName);
 
-    if (parentAccount == null && (event.data.previousAttributes && event.data.previousAttributes[PARENT_ACCOUNT_PROP])) {
-      parentAccount = await parentBook.getAccount(event.data.previousAttributes[PARENT_ACCOUNT_PROP]);
+    if (parentGroup == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
+      parentGroup = await parentBook.getGroup(event.data.previousAttributes['name']);
     }
 
-    if (parentAccount) {
-      return await this.parentAccountFound(childBook, parentBook, childGroup, parentAccount);
+    if (parentGroup) {
+      return await this.parentGroupFound(childBook, parentBook, childGroup, parentGroup);
     } else {
-      return await this.parentAccountNotFound(childBook, parentBook, childGroup);
+      return await this.parentGroupNotFound(childBook, parentBook, childGroup);
     }
   }
 
-  protected async getChildGroupAccountType(childBook: Book, childGroup: bkper.Group): Promise<AccountType> {
-    let group = await childBook.getGroup(childGroup.id);
-    return super.getGroupAccountType(group);
-  }
+  protected abstract parentGroupNotFound(childBook: Book, parentBook: Book, childGroup: bkper.Group): Promise<string>;
 
-  protected abstract parentAccountNotFound(childBook: Book, parentBook: Book, childGroup: bkper.Group): Promise<string>;
-
-  protected abstract parentAccountFound(childBook: Book, parentBook: Book, childGroup: bkper.Group, parentAccount: Account): Promise<string>;
+  protected abstract parentGroupFound(childBook: Book, parentBook: Book, childGroup: bkper.Group, parentGroup: Group): Promise<string>;
 
 }

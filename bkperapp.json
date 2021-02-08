@@ -29,17 +29,7 @@
   "propertiesSchema": {
     "book": {
       "keys": [
-        "parent_book"
-      ]
-    },
-    "group": {
-      "keys": [
-        "parent_account"
-      ]
-    },
-    "account": {
-      "keys": [
-        "parent_account"
+        "parent_book_id"
       ]
     }
   }

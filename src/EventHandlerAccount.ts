@@ -1,5 +1,4 @@
 import { Account, Book } from "bkper";
-import { PARENT_ACCOUNT_PROP } from "./constants";
 import { EventHandler } from "./EventHandler";
 
 export abstract class EventHandlerAccount extends EventHandler {
@@ -7,16 +6,16 @@ export abstract class EventHandlerAccount extends EventHandler {
   protected async processObject(childBook: Book, parentBook: Book, event: bkper.Event): Promise<string> {
     let childAccount = event.data.object as bkper.Account;
 
-    const subParentAccountName = childAccount.properties[PARENT_ACCOUNT_PROP];
+    const parentAccountName = childAccount.name;
 
-    if (!subParentAccountName) {
+    if (!parentAccountName) {
       return null;
     }
 
-    let parentAccount = await parentBook.getAccount(subParentAccountName);
+    let parentAccount = await parentBook.getAccount(parentAccountName);
 
-    if (parentAccount == null && (event.data.previousAttributes && event.data.previousAttributes[PARENT_ACCOUNT_PROP])) {
-      parentAccount = await parentBook.getAccount(event.data.previousAttributes[PARENT_ACCOUNT_PROP]);
+    if (parentAccount == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
+      parentAccount = await parentBook.getAccount(event.data.previousAttributes['name']);
     }
 
     if (parentAccount) {
