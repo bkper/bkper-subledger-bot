@@ -7,10 +7,10 @@ export class EventHandlerTransactionRestored extends EventHandlerTransaction {
     return `remoteId:${transaction.id} is:trashed`;
   }
 
-  protected connectedTransactionNotFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction): Promise<string> {
+  protected connectedTransactionNotFound(baseBook: Book, connectedBook: Book, baseTransaction: bkper.Transaction): Promise<string> {
     return null;
   }
-  protected async connectedTransactionFound(baseBook: Book, connectedBook: Book, transaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string> {
+  protected async connectedTransactionFound(baseBook: Book, connectedBook: Book, baseTransaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string> {
     let bookAnchor = super.buildBookAnchor(connectedBook);
 
     await connectedTransaction.restore();

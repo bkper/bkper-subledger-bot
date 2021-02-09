@@ -9,63 +9,39 @@ export interface AmountDescription {
 
 export abstract class EventHandlerTransaction extends EventHandler {
 
-  async processObject(childBook: Book, parentBook: Book, event: bkper.Event): Promise<string> {
+  async processObject(baseBook: Book, connectedBook: Book, event: bkper.Event): Promise<string> {
 
     let operation = event.data.object as bkper.TransactionOperation;
-    let childTransaction = operation.transaction;
+    let baseTransaction = operation.transaction;
 
-    if (!childTransaction.posted) {
+    if (!baseTransaction.posted) {
       return null;
     }
 
-    let iterator = parentBook.getTransactions(this.getTransactionQuery(childTransaction));
+    let iterator = connectedBook.getTransactions(this.getTransactionQuery(baseTransaction));
     if (await iterator.hasNext()) {
-      let parentTransaction = await iterator.next();
-      return this.connectedTransactionFound(childBook, parentBook, childTransaction, parentTransaction);
+      let connectedTransaction = await iterator.next();
+      return this.connectedTransactionFound(baseBook, connectedBook, baseTransaction, connectedTransaction);
     } else {
-      return this.connectedTransactionNotFound(childBook, parentBook, childTransaction)
+      return this.connectedTransactionNotFound(baseBook, connectedBook, baseTransaction)
     }
   }
 
-  protected async getParentAccount(parentBook: Book, childAccount: Account): Promise<Account> {
-
-      let parentAccountName = childAccount.getName();
-      if (parentAccountName) {
-        let parentAccount = await parentBook.getAccount(parentAccountName);
-        if (parentAccount == null) {
-          try {
-            parentAccount = await parentBook.newAccount()
-            .setName(parentAccountName)
-            .setType(childAccount.getType())
-            .create()
-          } catch (err) {
-            console.log(err)
-            return null;
-          }
+  protected async getParentAccount(parentBook: Book, baseAccount: Account): Promise<Account> {
+    let connectedAccountName = baseAccount.getName();
+      let parentAccount = await parentBook.getAccount(connectedAccountName);
+      if (parentAccount == null) {
+        try {
+          parentAccount = await parentBook.newAccount()
+          .setName(connectedAccountName)
+          .setType(baseAccount.getType())
+          .create()
+        } catch (err) {
+          console.log(err)
+          return null;
         }
-        return parentAccount;
       }
-
-    const childGroups = await childAccount.getGroups();
-    for (const childGroup of childGroups) {
-      let parentAccountName = childGroup.getName();
-      if (parentAccountName) {
-        let parentAccount = await parentBook.getAccount(parentAccountName);
-        if (parentAccount == null) {
-          try {
-            parentAccount = await parentBook.newAccount()
-            .setName(parentAccountName)
-            .setType(await this.getGroupAccountType(childGroup))
-            .create()
-          } catch (err) {
-            console.log(err)
-            return null;
-          }
-        }
-        return parentAccount;
-      }
-    }
-    return null;
+      return parentAccount;
   } 
 
   protected async isReadyToPost(newTransaction: Transaction) {

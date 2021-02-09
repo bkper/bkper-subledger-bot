@@ -2,23 +2,23 @@ import { Account, Book, Group } from "bkper";
 import { EventHandlerGroup } from "./EventHandlerGroup";
 
 export class EventHandlerGroupCreatedOrUpdated extends EventHandlerGroup {
-  protected async parentGroupNotFound(childBook: Book, parentBook: Book, childGroup: bkper.Group): Promise<string> {
-    console.log(`CREATE: ${childGroup.name}`)
-    let parentGroup = await parentBook.newGroup()
-      .setName(childGroup.name)
-      .setProperties(childGroup.properties)
+  protected async connectedGroupNotFound(baseBook: Book, connectedBook: Book, baseGroup: bkper.Group): Promise<string> {
+    console.log(`CREATE: ${baseGroup.name}`)
+    let parentGroup = await connectedBook.newGroup()
+      .setName(baseGroup.name)
+      .setProperties(baseGroup.properties)
       .create();
-    let bookAnchor = super.buildBookAnchor(parentBook);
+    let bookAnchor = super.buildBookAnchor(connectedBook);
     return `${bookAnchor}: GROUP ${parentGroup.getName()} CREATED`;
   }
-  protected async parentGroupFound(childBook: Book, parentBook: Book, childGroup: bkper.Group, parentGroup: Group): Promise<string> {
-    console.log(`UPDATE: ${childGroup.name}`)
-    await parentGroup
-      .setName(childGroup.name)
-      .setProperties(childGroup.properties)
+  protected async connectedGroupFound(baseBook: Book, connectedBook: Book, baseGroup: bkper.Group, connectedGroup: Group): Promise<string> {
+    console.log(`UPDATE: ${baseGroup.name}`)
+    await connectedGroup
+      .setName(baseGroup.name)
+      .setProperties(baseGroup.properties)
       .update();
-    let bookAnchor = super.buildBookAnchor(parentBook);
-    return `${bookAnchor}: GROUP ${parentGroup.getName()} UPDATED`;
+    let bookAnchor = super.buildBookAnchor(connectedBook);
+    return `${bookAnchor}: GROUP ${connectedGroup.getName()} UPDATED`;
   }
 
 }

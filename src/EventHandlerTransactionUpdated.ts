@@ -7,65 +7,65 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
     return `remoteId:${transaction.id}`;
   }
 
-  protected connectedTransactionNotFound(childBook: Book, parentBook: Book, childTransaction: bkper.Transaction): Promise<string> {
+  protected connectedTransactionNotFound(baseBook: Book, connectedBook: Book, baseTransaction: bkper.Transaction): Promise<string> {
     return null;
   }
-  protected async connectedTransactionFound(childBook: Book, parentBook: Book, childTransaction: bkper.Transaction, parentTransaction: Transaction): Promise<string> {
-    let childCreditAccount = await childBook.getAccount(childTransaction.creditAccount.id);
-    let childDebitAccount = await childBook.getAccount(childTransaction.debitAccount.id);
-    let parentBookAnchor = super.buildBookAnchor(parentBook);
+  protected async connectedTransactionFound(baseBook: Book, connectedBook: Book, baseTransaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string> {
+    let childCreditAccount = await baseBook.getAccount(baseTransaction.creditAccount.id);
+    let childDebitAccount = await baseBook.getAccount(baseTransaction.debitAccount.id);
+    let parentBookAnchor = super.buildBookAnchor(connectedBook);
 
-    let parentCreditAccount = await this.getParentAccount(parentBook, childCreditAccount);
-    let parentDebitAccount = await this.getParentAccount(parentBook, childDebitAccount);
+    let parentCreditAccount = await this.getParentAccount(connectedBook, childCreditAccount);
+    let parentDebitAccount = await this.getParentAccount(connectedBook, childDebitAccount);
 
     if (parentCreditAccount == null || parentDebitAccount == null) {
       return null;
     }
 
-    await this.updateParentTransaction(parentBook, parentTransaction, childTransaction, parentCreditAccount, parentDebitAccount);
+    await this.updateParentTransaction(connectedBook, connectedTransaction, baseTransaction, parentCreditAccount, parentDebitAccount);
 
-    let amountFormatted = parentBook.formatValue(parentTransaction.getAmount())
+    let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
 
-    let record = `EDITED: ${parentTransaction.getDateFormatted()} ${amountFormatted} ${await parentTransaction.getCreditAccountName()} ${await parentTransaction.getDebitAccountName()} ${parentTransaction.getDescription()}`;
+    let record = `EDITED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
 
     return `${parentBookAnchor}: ${record}`;
   }
 
 
 
-  private async updateParentTransaction(parentBook: Book, parentTransaction: Transaction, childTransaction: bkper.Transaction, parentCreditAccount: Account, parentDebitAccount: Account) {
-    if (parentTransaction.isChecked()) {
-      await parentTransaction.uncheck();
+  private async updateParentTransaction(connectedBook: Book, connectedTransaction: Transaction, baseTransaction: bkper.Transaction, connectedCreditAccount: Account, connectedDebitAccount: Account) {
+    if (connectedTransaction.isChecked()) {
+      await connectedTransaction.uncheck();
     }
 
-    parentTransaction
-      .setDate(childTransaction.date)
-      .setProperties(childTransaction.properties)
-      .setAmount(childTransaction.amount)
-      .setCreditAccount(parentCreditAccount)
-      .setDebitAccount(parentDebitAccount)
-      .setDescription(childTransaction.description)
-      .addRemoteId(childTransaction.id);
+    connectedTransaction
+      .setDate(baseTransaction.date)
+      .setProperties(baseTransaction.properties)
+      .setAmount(baseTransaction.amount)
+      .setCreditAccount(connectedCreditAccount)
+      .setDebitAccount(connectedDebitAccount)
+      .setDescription(baseTransaction.description)
+      .addRemoteId(baseTransaction.id);
 
 
-    let urls = childTransaction.urls;
+    let urls = baseTransaction.urls;
     if (!urls) {
       urls = [];
     }
 
-    if (childTransaction.urls) {
-      urls = childTransaction.urls;
+    if (baseTransaction.urls) {
+      urls = baseTransaction.urls;
     }
 
-    if (childTransaction.files) {
-      childTransaction.files.forEach(file => {
+    if (baseTransaction.files) {
+      baseTransaction.files.forEach(file => {
         urls.push(file.url);
       });
     }
 
-    parentTransaction.setUrls(urls);
+    connectedTransaction.setUrls(urls);
 
-    await parentTransaction.update();
+    await connectedTransaction.update();
   }
 
 
