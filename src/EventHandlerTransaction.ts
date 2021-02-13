@@ -9,7 +9,11 @@ export interface AmountDescription {
 
 export abstract class EventHandlerTransaction extends EventHandler {
 
-  async processObject(baseBook: Book, connectedBook: Book, event: bkper.Event): Promise<string> {
+  processParentBookEvent(parentBook: Book, event: bkper.Event): Promise<string> {
+    return null;
+  }
+
+  async processChildBookEvent(childBook: Book, parentBook: Book, event: bkper.Event): Promise<string> {
 
     let operation = event.data.object as bkper.TransactionOperation;
     let baseTransaction = operation.transaction;
@@ -18,23 +22,23 @@ export abstract class EventHandlerTransaction extends EventHandler {
       return null;
     }
 
-    let iterator = connectedBook.getTransactions(this.getTransactionQuery(baseTransaction));
+    let iterator = parentBook.getTransactions(this.getTransactionQuery(baseTransaction));
     if (await iterator.hasNext()) {
       let connectedTransaction = await iterator.next();
-      return this.connectedTransactionFound(baseBook, connectedBook, baseTransaction, connectedTransaction);
+      return this.parentTransactionFound(childBook, parentBook, baseTransaction, connectedTransaction);
     } else {
-      return this.connectedTransactionNotFound(baseBook, connectedBook, baseTransaction)
+      return this.parentTransactionNotFound(childBook, parentBook, baseTransaction)
     }
   }
 
-  protected async getParentAccount(parentBook: Book, baseAccount: Account): Promise<Account> {
-    let connectedAccountName = baseAccount.getName();
-      let parentAccount = await parentBook.getAccount(connectedAccountName);
+  protected async getParentAccount(parentBook: Book, childAccount: Account): Promise<Account> {
+    let parentAccountName = childAccount.getName();
+      let parentAccount = await parentBook.getAccount(parentAccountName);
       if (parentAccount == null) {
         try {
           parentAccount = await parentBook.newAccount()
-          .setName(connectedAccountName)
-          .setType(baseAccount.getType())
+          .setName(parentAccountName)
+          .setType(childAccount.getType())
           .create()
         } catch (err) {
           console.log(err)
@@ -50,7 +54,7 @@ export abstract class EventHandlerTransaction extends EventHandler {
 
   protected abstract getTransactionQuery(childTransaction: bkper.Transaction): string;
 
-  protected abstract connectedTransactionNotFound(childBook: Book, parentBook: Book, childTransaction: bkper.Transaction): Promise<string>;
+  protected abstract parentTransactionNotFound(childBook: Book, parentBook: Book, childTransaction: bkper.Transaction): Promise<string>;
 
-  protected abstract connectedTransactionFound(childBook: Book, parentBook: Book, chilTransaction: bkper.Transaction, parentTransaction: Transaction): Promise<string>;
+  protected abstract parentTransactionFound(childBook: Book, parentBook: Book, chilTransaction: bkper.Transaction, parentTransaction: Transaction): Promise<string>;
 }

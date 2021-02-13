@@ -7,21 +7,21 @@ export class EventHandlerTransactionDeleted extends EventHandlerTransaction {
     return `remoteId:${transaction.id}`;
   }
 
-  protected connectedTransactionNotFound(baseBook: Book, connectedBook: Book, baseTransaction: bkper.Transaction): Promise<string> {
+  protected parentTransactionNotFound(childBook: Book, parentBook: Book, childTransaction: bkper.Transaction): Promise<string> {
     return null;
   }
-  protected async connectedTransactionFound(baseBook: Book, connectedBook: Book, baseTransaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string> {
-    let bookAnchor = super.buildBookAnchor(connectedBook);
+  protected async parentTransactionFound(childBook: Book, parentBook: Book, childTransaction: bkper.Transaction, parentTransaction: Transaction): Promise<string> {
+    let bookAnchor = super.buildBookAnchor(parentBook);
 
-    if (connectedTransaction.isChecked()) {
-      await connectedTransaction.uncheck();
+    if (parentTransaction.isChecked()) {
+      await parentTransaction.uncheck();
     }
 
-    await connectedTransaction.remove();
+    await parentTransaction.remove();
 
-    let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
+    let amountFormatted = parentBook.formatValue(parentTransaction.getAmount())
 
-    let record = `DELETED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
+    let record = `DELETED: ${parentTransaction.getDateFormatted()} ${amountFormatted} ${await parentTransaction.getCreditAccountName()} ${await parentTransaction.getDebitAccountName()} ${parentTransaction.getDescription()}`;
 
     return `${bookAnchor}: ${record}`;
   }

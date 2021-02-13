@@ -4,28 +4,30 @@ import { EventHandler } from "./EventHandler";
 
 export abstract class EventHandlerGroup extends EventHandler {
 
-  protected async processObject(baseBook: Book, connectedBook: Book, event: bkper.Event): Promise<string> {
+  protected async processChildBookEvent(parentBook: Book, childBook: Book, event: bkper.Event): Promise<string> {
+    return null;
+  }
 
-    let baseGroup = event.data.object as bkper.Group;
+  async processParentBookEvent(parentBook: Book, event: bkper.Event): Promise<string> {
 
-    if (connectedBook == null) {
-      connectedBook = await this.getConnectedBook(baseBook, baseGroup);
-    }
+    let parentGroup = event.data.object as bkper.Group;
 
-    if (connectedBook == null) {
+    let childBook = await this.getConnectedBook(parentBook, parentGroup);
+
+    if (childBook == null) {
       return null;
     }
 
-    let connectedGroup = await connectedBook.getGroup(baseGroup.name);
+    let childGroup = await childBook.getGroup(parentGroup.name);
 
-    if (connectedGroup == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
-      connectedGroup = await connectedBook.getGroup(event.data.previousAttributes['name']);
+    if (childGroup == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
+      childGroup = await childBook.getGroup(event.data.previousAttributes['name']);
     }
 
-    if (connectedGroup) {
-      return await this.connectedGroupFound(baseBook, connectedBook, baseGroup, connectedGroup);
+    if (childGroup) {
+      return await this.childGroupFound(parentBook, childBook, parentGroup, childGroup);
     } else {
-      return await this.connectedGroupNotFound(baseBook, connectedBook, baseGroup);
+      return await this.childGroupNotFound(parentBook, childBook, parentGroup);
     }
   }
 
@@ -37,8 +39,8 @@ export abstract class EventHandlerGroup extends EventHandler {
     return null;
   }
 
-  protected abstract connectedGroupNotFound(baseBook: Book, connectedBook: Book, baseGroup: bkper.Group): Promise<string>;
+  protected abstract childGroupNotFound(baseBook: Book, connectedBook: Book, baseGroup: bkper.Group): Promise<string>;
 
-  protected abstract connectedGroupFound(baseBook: Book, connectedBook: Book, baseGroup: bkper.Group, connectedGroup: Group): Promise<string>;
+  protected abstract childGroupFound(baseBook: Book, connectedBook: Book, baseGroup: bkper.Group, connectedGroup: Group): Promise<string>;
 
 }

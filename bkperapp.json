@@ -34,7 +34,14 @@
     },
     "group": {
       "keys": [
-        "child_book_id"
+        "child_book_id",
+        "parent_group",
+        "parent_account"
+      ]
+    },
+    "account": {
+      "keys": [
+        "parent_account"
       ]
     }
   }

@@ -3,41 +3,41 @@ import { EventHandlerAccount } from "./EventHandlerAccount";
 
 export class EventHandlerAccountCreatedOrUpdated extends EventHandlerAccount {
 
-  public async connectedAccountNotFound(baseBook: Book, connectedBook: Book, baseAccount: bkper.Account): Promise<string> {
+  public async childAccountNotFound(parentBook: Book, childBook: Book, parentAccount: bkper.Account): Promise<string> {
 
-    let connectedAccount = connectedBook.newAccount();
-    await this.syncAccounts(baseBook, connectedBook, baseAccount, connectedAccount);
-    await connectedAccount.create();
-    let bookAnchor = super.buildBookAnchor(connectedBook);
-    return `${bookAnchor}: ACCOUNT ${connectedAccount.getName()} CREATED`;
+    let childAccount = childBook.newAccount();
+    await this.syncChildAccounts(parentBook, childBook, parentAccount, childAccount);
+    await childAccount.create();
+    let bookAnchor = super.buildBookAnchor(childBook);
+    return `${bookAnchor}: CHILD ACCOUNT ${childAccount.getName()} CREATED`;
   }
 
-  protected async connectedAccountFound(baseBook: Book, connectedBook: Book, baseAccount: bkper.Account, connectedAccount: Account): Promise<string> {
-    await this.syncAccounts(baseBook, connectedBook, baseAccount, connectedAccount);
-    await connectedAccount.update();
-    let bookAnchor = super.buildBookAnchor(connectedBook);
-    return `${bookAnchor}: ACCOUNT ${connectedAccount.getName()} UPDATED`;
+  protected async childAccountFound(parentBook: Book, childBook: Book, parentAccount: bkper.Account, childAccount: Account): Promise<string> {
+    await this.syncChildAccounts(parentBook, childBook, parentAccount, childAccount);
+    await childAccount.update();
+    let bookAnchor = super.buildBookAnchor(childBook);
+    return `${bookAnchor}: CHILD ACCOUNT ${childAccount.getName()} UPDATED`;
   }
 
-  protected async syncAccounts(baseBook: Book, connectedBook: Book, baseAccount: bkper.Account, connectedAccount: Account) {
-    connectedAccount.setGroups([]);
-    connectedAccount.setName(baseAccount.name)
-      .setType(baseAccount.type as AccountType)
-      .setProperties(baseAccount.properties)
-      .setArchived(baseAccount.archived);
-    if (baseAccount.groups) {
-      for (const baseGroupId of baseAccount.groups) {
-        let baseGroup = await baseBook.getGroup(baseGroupId);
+  protected async syncChildAccounts(parentBook: Book, childBook: Book, parentAccount: bkper.Account, childAccount: Account) {
+    childAccount.setGroups([]);
+    childAccount.setName(parentAccount.name)
+      .setType(parentAccount.type as AccountType)
+      .setProperties(parentAccount.properties)
+      .setArchived(parentAccount.archived);
+    if (parentAccount.groups) {
+      for (const baseGroupId of parentAccount.groups) {
+        let baseGroup = await parentBook.getGroup(baseGroupId);
         if (baseGroup) {
-          let connectedGroup = await connectedBook.getGroup(baseGroup.getName());
+          let connectedGroup = await childBook.getGroup(baseGroup.getName());
           if (connectedGroup == null) {
-            connectedGroup = await connectedBook.newGroup()
+            connectedGroup = await childBook.newGroup()
               .setHidden(baseGroup.isHidden())
               .setName(baseGroup.getName())
               .setProperties(baseGroup.getProperties())
               .create();
           }
-          connectedAccount.addGroup(connectedGroup);
+          childAccount.addGroup(connectedGroup);
         }
       }
     }

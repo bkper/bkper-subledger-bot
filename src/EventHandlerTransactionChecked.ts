@@ -7,16 +7,16 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
     return `remoteId:${transaction.id}`;
   }
 
-  protected async connectedTransactionFound(baseBook: Book, connectedBook: Book, baseTransaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string> {
-    if (connectedTransaction.isPosted() && !connectedTransaction.isChecked()) {
-      await connectedTransaction.check();
-      return await this.buildFoundResponse(connectedBook, connectedTransaction);
-    } else if (!connectedTransaction.isPosted() && await this.isReadyToPost(connectedTransaction)) {
-      await connectedTransaction.post();
-      await connectedTransaction.check();
-      return await this.buildFoundResponse(connectedBook, connectedTransaction);
+  protected async parentTransactionFound(childBook: Book, parentBook: Book, childTransaction: bkper.Transaction, parentTransaction: Transaction): Promise<string> {
+    if (parentTransaction.isPosted() && !parentTransaction.isChecked()) {
+      await parentTransaction.check();
+      return await this.buildFoundResponse(parentBook, parentTransaction);
+    } else if (!parentTransaction.isPosted() && await this.isReadyToPost(parentTransaction)) {
+      await parentTransaction.post();
+      await parentTransaction.check();
+      return await this.buildFoundResponse(parentBook, parentTransaction);
     } else {
-      return await this.buildFoundResponse(connectedBook, connectedTransaction);
+      return await this.buildFoundResponse(parentBook, parentTransaction);
     }
   }
 
@@ -28,32 +28,32 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
   }
 
 
-  protected async connectedTransactionNotFound(baseBook: Book, connectedBook: Book, baseTransaction: bkper.Transaction): Promise<string> {
-    let childCreditAccount = await baseBook.getAccount(baseTransaction.creditAccount.id);
-    let childDebitAccount = await baseBook.getAccount(baseTransaction.debitAccount.id);
-    let parentBookAnchor = super.buildBookAnchor(connectedBook);
+  protected async parentTransactionNotFound(childBook: Book, parentBook: Book, childTransaction: bkper.Transaction): Promise<string> {
+    let childCreditAccount = await childBook.getAccount(childTransaction.creditAccount.id);
+    let childDebitAccount = await childBook.getAccount(childTransaction.debitAccount.id);
+    let parentBookAnchor = super.buildBookAnchor(parentBook);
 
-    let parentCreditAccount = await this.getParentAccount(connectedBook, childCreditAccount);
-    let parentDebitAccount = await this.getParentAccount(connectedBook, childDebitAccount);
+    let parentCreditAccount = await this.getParentAccount(parentBook, childCreditAccount);
+    let parentDebitAccount = await this.getParentAccount(parentBook, childDebitAccount);
 
 
-    let newTransaction = connectedBook.newTransaction()
-      .setDate(baseTransaction.date)
-      .setProperties(baseTransaction.properties)
-      .setAmount(baseTransaction.amount)
+    let parentTransaction = parentBook.newTransaction()
+      .setDate(childTransaction.date)
+      .setProperties(childTransaction.properties)
+      .setAmount(childTransaction.amount)
       .setCreditAccount(parentCreditAccount)
       .setDebitAccount(parentDebitAccount)
-      .setDescription(baseTransaction.description)
-      .addRemoteId(baseTransaction.id);
+      .setDescription(childTransaction.description)
+      .addRemoteId(childTransaction.id);
 
-    let record = `${newTransaction.getDate()} ${newTransaction.getAmount()} ${parentCreditAccount ? parentCreditAccount.getName() : ''} ${parentDebitAccount ? parentDebitAccount.getName() : ''} ${newTransaction.getDescription()}`;
+    let record = `${parentTransaction.getDate()} ${parentTransaction.getAmount()} ${parentCreditAccount ? parentCreditAccount.getName() : ''} ${parentDebitAccount ? parentDebitAccount.getName() : ''} ${parentTransaction.getDescription()}`;
 
-    if (await this.isReadyToPost(newTransaction)) {
-      await newTransaction.post();
-      await newTransaction.check();
+    if (await this.isReadyToPost(parentTransaction)) {
+      await parentTransaction.post();
+      await parentTransaction.check();
     } else {
-      newTransaction.setDescription(`${newTransaction.getCreditAccount() == null ? parentCreditAccount.getName() : ''} ${newTransaction.getDebitAccount() == null ? parentDebitAccount.getName() : ''} ${newTransaction.getDescription()}`.trim())
-      await newTransaction.create();
+      parentTransaction.setDescription(`${parentTransaction.getCreditAccount() == null ? parentCreditAccount.getName() : ''} ${parentTransaction.getDebitAccount() == null ? parentDebitAccount.getName() : ''} ${parentTransaction.getDescription()}`.trim())
+      await parentTransaction.create();
     }
 
     return `${parentBookAnchor}: ${record}`;

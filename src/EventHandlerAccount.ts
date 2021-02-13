@@ -4,35 +4,37 @@ import { EventHandler } from "./EventHandler";
 
 export abstract class EventHandlerAccount extends EventHandler {
 
-  protected async processObject(baseBook: Book, connectedBook: Book, event: bkper.Event): Promise<string> {
-    let baseAccount = event.data.object as bkper.Account;
 
-    if (connectedBook == null) {
-      connectedBook = await this.getConnectedBook(baseBook, baseAccount);
-    }
+  protected async processChildBookEvent(parentBook: Book, childBook: Book, event: bkper.Event): Promise<string> {
+    return null;
+  }
 
-    if (connectedBook == null) {
+  async processParentBookEvent(parentBook: Book, event: bkper.Event): Promise<string> {
+    let parentAccount = event.data.object as bkper.Account;
+
+    let childBook = await this.getChildBook(parentBook, parentAccount);
+
+    if (childBook == null) {
       return null;
     }
 
-    let connectedAccount = await connectedBook.getAccount(baseAccount.name);
+    let childAccount = await childBook.getAccount(parentAccount.name);
 
-    if (connectedAccount == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
-      connectedAccount = await connectedBook.getAccount(event.data.previousAttributes['name']);
+    if (childAccount == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
+      childAccount = await childBook.getAccount(event.data.previousAttributes['name']);
     }
 
-    if (connectedAccount) {
-      return await this.connectedAccountFound(baseBook, connectedBook, baseAccount, connectedAccount);
+    if (childAccount) {
+      return await this.childAccountFound(parentBook, childBook, parentAccount, childAccount);
     } else {
-      return await this.connectedAccountNotFound(baseBook, connectedBook, baseAccount);
+      return await this.childAccountNotFound(parentBook, childBook, parentAccount);
     }
-
   }
 
-  private async getConnectedBook(baseBook: Book, baseAccount: bkper.Account): Promise<Book> {
-    if (baseAccount.groups) {
-      for (const groupId of baseAccount.groups) {
-        let group = await baseBook.getGroup(groupId);
+  private async getChildBook(parentBook: Book, parentAccount: bkper.Account): Promise<Book> {
+    if (parentAccount.groups) {
+      for (const groupId of parentAccount.groups) {
+        let group = await parentBook.getGroup(groupId);
         if (group.getProperty(CHILD_BOOK_ID_PROP)) {
           return Bkper.getBook(group.getProperty(CHILD_BOOK_ID_PROP));
         }
@@ -41,8 +43,8 @@ export abstract class EventHandlerAccount extends EventHandler {
     return null;
   }
 
-  protected abstract connectedAccountNotFound(baseBook: Book, connectedBook: Book, account: bkper.Account): Promise<string>;
+  protected abstract childAccountNotFound(baseBook: Book, connectedBook: Book, account: bkper.Account): Promise<string>;
 
-  protected abstract connectedAccountFound(baseBook: Book, connectedBook: Book, account: bkper.Account, connectedAccount: Account): Promise<string>;
+  protected abstract childAccountFound(baseBook: Book, connectedBook: Book, account: bkper.Account, connectedAccount: Account): Promise<string>;
 
 }

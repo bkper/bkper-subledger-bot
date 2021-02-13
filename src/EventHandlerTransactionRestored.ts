@@ -7,17 +7,17 @@ export class EventHandlerTransactionRestored extends EventHandlerTransaction {
     return `remoteId:${transaction.id} is:trashed`;
   }
 
-  protected connectedTransactionNotFound(baseBook: Book, connectedBook: Book, baseTransaction: bkper.Transaction): Promise<string> {
+  protected parentTransactionNotFound(childBook: Book, parentBook: Book, childTransaction: bkper.Transaction): Promise<string> {
     return null;
   }
-  protected async connectedTransactionFound(baseBook: Book, connectedBook: Book, baseTransaction: bkper.Transaction, connectedTransaction: Transaction): Promise<string> {
-    let bookAnchor = super.buildBookAnchor(connectedBook);
+  protected async parentTransactionFound(childBook: Book, parentBook: Book, childTransaction: bkper.Transaction, parentTransaction: Transaction): Promise<string> {
+    let bookAnchor = super.buildBookAnchor(parentBook);
 
-    await connectedTransaction.restore();
+    await parentTransaction.restore();
 
-    let amountFormatted = connectedBook.formatValue(connectedTransaction.getAmount())
+    let amountFormatted = parentBook.formatValue(parentTransaction.getAmount())
 
-    let record = `RESTORED: ${connectedTransaction.getDateFormatted()} ${amountFormatted} ${await connectedTransaction.getCreditAccountName()} ${await connectedTransaction.getDebitAccountName()} ${connectedTransaction.getDescription()}`;
+    let record = `RESTORED: ${parentTransaction.getDateFormatted()} ${amountFormatted} ${await parentTransaction.getCreditAccountName()} ${await parentTransaction.getDebitAccountName()} ${parentTransaction.getDescription()}`;
 
     return `${bookAnchor}: ${record}`;
   }
