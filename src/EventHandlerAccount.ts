@@ -1,14 +1,13 @@
-import { Account, Bkper, Book } from "bkper";
-import { CHILD_BOOK_ID_PROP } from "./constants";
+import { Account, Bkper, Book, Group } from "bkper";
+import { CHILD_BOOK_ID_PROP, PARENT_ACCOUNT_PROP } from "./constants";
 import { EventHandler } from "./EventHandler";
 
 export abstract class EventHandlerAccount extends EventHandler {
 
-
-  protected async processChildBookEvent(parentBook: Book, childBook: Book, event: bkper.Event): Promise<string> {
-    return null;
-  }
-
+  // parent >> child
+  protected abstract childAccountNotFound(parentBook: Book, childBook: Book, parentAccount: bkper.Account): Promise<string>;
+  protected abstract childAccountFound(parentBook: Book, childBook: Book, parentAccount: bkper.Account, childAccount: Account): Promise<string>;
+  
   async processParentBookEvent(parentBook: Book, event: bkper.Event): Promise<string> {
     let parentAccount = event.data.object as bkper.Account;
 
@@ -43,8 +42,43 @@ export abstract class EventHandlerAccount extends EventHandler {
     return null;
   }
 
-  protected abstract childAccountNotFound(baseBook: Book, connectedBook: Book, account: bkper.Account): Promise<string>;
 
-  protected abstract childAccountFound(baseBook: Book, connectedBook: Book, account: bkper.Account, connectedAccount: Account): Promise<string>;
+
+
+
+  // child >> parent
+  protected abstract parentAccountNotFound(childBook: Book, parentBook: Book, childAccount: Account): Promise<string>;
+  protected abstract parentAccountFound(childBook: Book, parentBook: Book, childAccount: Account, parentAccount: Account): Promise<string>;
+
+  async processChildBookEvent(childBook: Book, parentBook: Book, event: bkper.Event): Promise<string> {
+    let childAccountJson = event.data.object as bkper.Account;
+    let childAccount = await childBook.getAccount(childAccountJson.id);
+
+    if (childAccount.getGroups()) {
+      for (const childGroup of await childAccount.getGroups()) {
+        // Roll up into one group
+        if (childGroup.getProperty(PARENT_ACCOUNT_PROP)) {
+          let parentAccount = await parentBook.getAccount(childGroup.getProperty(PARENT_ACCOUNT_PROP));
+          if (!parentAccount) {
+            // Only create if not found yet. This should never occur because it will be ready created by grou event
+            return await this.parentAccountNotFound(childBook, parentBook, childAccount);
+          }
+        } else if (await this.getLinkedParentGroup(childBook, parentBook, childGroup)) {
+          // Roll up 1-1
+          let parentAccount = await parentBook.getAccount(childAccount.getName());
+          if (parentAccount == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
+            parentAccount = await childBook.getAccount(event.data.previousAttributes['name']);
+          }
+          if (parentAccount) {
+            return await this.parentAccountFound(childBook, parentBook, childAccount, parentAccount);
+          } else {
+            return await this.parentAccountNotFound(childBook, parentBook, childAccount);
+          }
+        }
+      }
+    }
+    return null;
+  }
+
 
 }

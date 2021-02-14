@@ -1,4 +1,5 @@
 import { Account, AccountType, Amount, Book, Group, Transaction } from "bkper";
+import { PARENT_ACCOUNT_PROP } from "./constants";
 import { EventHandler } from "./EventHandler";
 
 export interface AmountDescription {
@@ -31,22 +32,50 @@ export abstract class EventHandlerTransaction extends EventHandler {
     }
   }
 
-  protected async getParentAccount(parentBook: Book, childAccount: Account): Promise<Account> {
-    let parentAccountName = childAccount.getName();
-      let parentAccount = await parentBook.getAccount(parentAccountName);
-      if (parentAccount == null) {
-        try {
-          parentAccount = await parentBook.newAccount()
-          .setName(parentAccountName)
-          .setType(childAccount.getType())
-          .create()
-        } catch (err) {
-          console.log(err)
-          return null;
+  protected async getParentAccount(childBook: Book, parentBook: Book, childAccount: Account): Promise<Account> {
+
+    const childGroups = await childAccount.getGroups();
+
+    for (const childGroup of childGroups) {
+      let parentAccountName = childGroup.getProperty(PARENT_ACCOUNT_PROP);
+      if (parentAccountName) {
+        let parentAccount = await parentBook.getAccount(parentAccountName);
+        if (parentAccount == null) {
+          try {
+            parentAccount = await parentBook.newAccount()
+              .setName(parentAccountName)
+              .setType(await this.getGroupAccountType(childGroup))
+              .create()
+          } catch (err) {
+            console.log(err)
+            return null;
+          }
         }
+        return parentAccount;
       }
-      return parentAccount;
-  } 
+      
+      const linkedParentGroup = await this.getLinkedParentGroup(childBook, parentBook, childGroup);
+
+      if (linkedParentGroup) {
+        let parentAccountName = childAccount.getName();
+        let parentAccount = await parentBook.getAccount(parentAccountName);
+        if (parentAccount == null) {
+          try {
+            parentAccount = await parentBook.newAccount()
+              .setName(parentAccountName)
+              .setType(childAccount.getType());
+              await parentAccount.addGroup(linkedParentGroup);
+              parentAccount.create()
+          } catch (err) {
+            console.log(err)
+            return null;
+          }
+        }
+        return parentAccount;
+      }
+    }
+    return null;
+  }
 
   protected async isReadyToPost(newTransaction: Transaction) {
     return await newTransaction.getCreditAccount() != null && await newTransaction.getDebitAccount() != null && newTransaction.getAmount() != null;

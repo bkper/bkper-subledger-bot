@@ -15,13 +15,17 @@ A Subledger may contain, for example, only the details of the [Accounts Receivab
 The Subledger bot is triggered on ```TRANSACTION_POSTED``` event, and roll the transaction up to the parent book.
 
 
-### Book property
+### Parent Book property
 
 - ```parent_book_id```: The id of the parent book, found on ```bookId``` param of the url.
 
-### Group property
+### Parent Group property
 
 - ```child_book_id```: The id of the child book bound to the given group, found on ```bookId``` param of the url.
+
+### Child Group property
+
+- ```parent_account```: The name of the parent account to bind the child group to.
 
 
 

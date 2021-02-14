@@ -1,4 +1,5 @@
 import { Account, Book, Transaction } from "bkper";
+import { CHILD_FROM_PROP, CHILD_TO_PROP } from "./constants";
 import { EventHandlerTransaction } from "./EventHandlerTransaction";
 
 export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
@@ -15,14 +16,14 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
     let childDebitAccount = await childBook.getAccount(childTransaction.debitAccount.id);
     let parentBookAnchor = super.buildBookAnchor(parentBook);
 
-    let parentCreditAccount = await this.getParentAccount(parentBook, childCreditAccount);
-    let parentDebitAccount = await this.getParentAccount(parentBook, childDebitAccount);
+    let parentCreditAccount = await this.getParentAccount(childBook, parentBook, childCreditAccount);
+    let parentDebitAccount = await this.getParentAccount(childBook, parentBook, childDebitAccount);
 
     if (parentCreditAccount == null || parentDebitAccount == null) {
       return null;
     }
 
-    await this.updateParentTransaction(parentBook, parentTransaction, childTransaction, parentCreditAccount, parentDebitAccount);
+    await this.updateParentTransaction(childBook, parentBook, childTransaction, parentTransaction, parentCreditAccount, parentDebitAccount);
 
     let amountFormatted = parentBook.formatValue(parentTransaction.getAmount())
 
@@ -33,7 +34,11 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
 
 
 
-  private async updateParentTransaction(childBook: Book, parentTransaction: Transaction, childTransaction: bkper.Transaction, parentCreditAccount: Account, parentDebitAccount: Account) {
+  private async updateParentTransaction(childBook: Book, parentBook: Book, childTransaction: bkper.Transaction, parentTransaction: Transaction, parentCreditAccount: Account, parentDebitAccount: Account) {
+
+    let childCreditAccount = await childBook.getAccount(childTransaction.creditAccount.id);
+    let childDebitAccount = await childBook.getAccount(childTransaction.debitAccount.id);
+
     if (parentTransaction.isChecked()) {
       await parentTransaction.uncheck();
     }
@@ -41,6 +46,8 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
     parentTransaction
       .setDate(childTransaction.date)
       .setProperties(childTransaction.properties)
+      .setProperty(CHILD_FROM_PROP, childCreditAccount.getName())
+      .setProperty(CHILD_TO_PROP, childDebitAccount.getName())      
       .setAmount(childTransaction.amount)
       .setCreditAccount(parentCreditAccount)
       .setDebitAccount(parentDebitAccount)
