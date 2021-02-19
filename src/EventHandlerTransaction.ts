@@ -19,6 +19,11 @@ export abstract class EventHandlerTransaction extends EventHandler {
     let operation = event.data.object as bkper.TransactionOperation;
     let baseTransaction = operation.transaction;
 
+    if (baseTransaction.agentId == 'exchange-bot') {
+      console.log("Same payload agent. Preventing bot loop.");
+      return null;
+    } 
+
     if (!baseTransaction.posted) {
       return null;
     }
