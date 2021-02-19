@@ -20,7 +20,7 @@ export abstract class EventHandlerTransaction extends EventHandler {
     let baseTransaction = operation.transaction;
 
     if (baseTransaction.agentId == 'exchange-bot') {
-      console.log("Same payload agent. Preventing bot loop.");
+      console.log("Skiping Exchange Bot agent.");
       return null;
     } 
 
