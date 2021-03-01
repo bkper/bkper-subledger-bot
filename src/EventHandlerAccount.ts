@@ -64,16 +64,16 @@ export abstract class EventHandlerAccount extends EventHandler {
             return await this.parentAccountNotFound(childBook, parentBook, childAccount);
           }
         } else if (await this.getLinkedParentGroup(childBook, parentBook, childGroup)) {
-          // Roll up 1-1
-          let parentAccount = await parentBook.getAccount(childAccount.getName());
-          if (parentAccount == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
-            parentAccount = await childBook.getAccount(event.data.previousAttributes['name']);
-          }
-          if (parentAccount) {
-            return await this.parentAccountFound(childBook, parentBook, childAccount, parentAccount);
-          } else {
-            return await this.parentAccountNotFound(childBook, parentBook, childAccount);
-          }
+          // // Roll up 1-1
+          // let parentAccount = await parentBook.getAccount(childAccount.getName());
+          // if (parentAccount == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
+          //   parentAccount = await childBook.getAccount(event.data.previousAttributes['name']);
+          // }
+          // if (parentAccount) {
+          //   return await this.parentAccountFound(childBook, parentBook, childAccount, parentAccount);
+          // } else {
+          //   return await this.parentAccountNotFound(childBook, parentBook, childAccount);
+          // }
         }
       }
     }

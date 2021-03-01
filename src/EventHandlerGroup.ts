@@ -46,11 +46,6 @@ export abstract class EventHandlerGroup extends EventHandler {
   
   protected async processChildBookEvent(childBook: Book, parentBook: Book, event: bkper.Event): Promise<string> {
 
-    if (event.agent.id == 'exchange-bot') {
-      console.log("Skiping Exchange Bot agent.");
-      return null;
-    } 
-
     let childGroup = event.data.object as bkper.Group;
 
     const parentAccountName = childGroup.properties[PARENT_ACCOUNT_PROP];
@@ -66,13 +61,13 @@ export abstract class EventHandlerGroup extends EventHandler {
       }
     } else {
 
-      let parentGroup = await this.getLinkedParentGroupFromEvent(childBook, parentBook, childGroup, event);
+      // let parentGroup = await this.getLinkedParentGroupFromEvent(childBook, parentBook, childGroup, event);
 
-      if (parentGroup) {
-        return await this.parentGroupFound(childBook, parentBook, childGroup, parentGroup)
-      } else {
-        return null;
-      }
+      // if (parentGroup) {
+      //   return await this.parentGroupFound(childBook, parentBook, childGroup, parentGroup)
+      // } else {
+      //   return null;
+      // }
 
     }
 
