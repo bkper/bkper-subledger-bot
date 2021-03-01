@@ -60,7 +60,6 @@ export abstract class EventHandlerGroup extends EventHandler {
         return await this.parentAccountNotFound(childBook, parentBook, childGroup);
       }
     } else {
-
       // let parentGroup = await this.getLinkedParentGroupFromEvent(childBook, parentBook, childGroup, event);
 
       // if (parentGroup) {
@@ -70,7 +69,7 @@ export abstract class EventHandlerGroup extends EventHandler {
       // }
 
     }
-
+    return null;
   }
 
   private async getLinkedParentGroupFromEvent(childBook: Book, parentBook: Book, childGroup: bkper.Group, event: bkper.Event): Promise<Group> {
