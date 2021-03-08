@@ -11,19 +11,21 @@ export abstract class EventHandlerGroup extends EventHandler {
   async processParentBookEvent(parentBook: Book, event: bkper.Event): Promise<string> {
 
     let parentGroup = event.data.object as bkper.Group;
-    let childBook = await this.getChildBook(parentGroup);
-
-    if (childBook == null) {
-      return null;
-    }
-
-    let childGroup = await childBook.getGroup(parentGroup.name);
-
-    if (childGroup == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
-      childGroup = await childBook.getGroup(event.data.previousAttributes['name']);
-    }
 
     try {
+
+      let childBook = await this.getChildBook(parentGroup);
+
+      if (childBook == null) {
+        return null;
+      }
+
+      let childGroup = await childBook.getGroup(parentGroup.name);
+
+      if (childGroup == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
+        childGroup = await childBook.getGroup(event.data.previousAttributes['name']);
+      }
+
 
       if (childGroup) {
         return await this.childGroupFound(parentBook, childBook, parentGroup, childGroup);

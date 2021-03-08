@@ -10,20 +10,20 @@ export abstract class EventHandlerAccount extends EventHandler {
   
   async processParentBookEvent(parentBook: Book, event: bkper.Event): Promise<string> {
     let parentAccount = event.data.object as bkper.Account;
-
-    let childBook = await this.getChildBook(parentBook, parentAccount);
-
-    if (childBook == null) {
-      return null;
-    }
-
-    let childAccount = await childBook.getAccount(parentAccount.name);
-
-    if (childAccount == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
-      childAccount = await childBook.getAccount(event.data.previousAttributes['name']);
-    }
-
     try {
+
+      let childBook = await this.getChildBook(parentBook, parentAccount);
+
+      if (childBook == null) {
+        return null;
+      }
+
+      let childAccount = await childBook.getAccount(parentAccount.name);
+
+      if (childAccount == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
+        childAccount = await childBook.getAccount(event.data.previousAttributes['name']);
+      }
+
       if (childAccount) {
         return await this.childAccountFound(parentBook, childBook, parentAccount, childAccount);
       } else {
