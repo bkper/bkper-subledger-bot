@@ -34,7 +34,7 @@ export abstract class EventHandlerGroup extends EventHandler {
       }
 
     } catch (err) {
-      throw `Failed to handle group ${parentGroup.name} event: ${err}`;
+      throw `Failed to handle group [${parentGroup.name}] event: ${err}`;
     }
 
   }

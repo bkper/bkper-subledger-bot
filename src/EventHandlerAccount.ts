@@ -30,7 +30,7 @@ export abstract class EventHandlerAccount extends EventHandler {
         return await this.childAccountNotFound(parentBook, childBook, parentAccount);
       }
     } catch (err) {
-      throw `Failed to handle account ${parentAccount.name} event: ${err}`;
+      throw `Failed to handle account [${parentAccount.name}] event: ${err}`;
     }
 
   }
