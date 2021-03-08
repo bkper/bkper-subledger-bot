@@ -23,11 +23,18 @@ export abstract class EventHandlerGroup extends EventHandler {
       childGroup = await childBook.getGroup(event.data.previousAttributes['name']);
     }
 
-    if (childGroup) {
-      return await this.childGroupFound(parentBook, childBook, parentGroup, childGroup);
-    } else {
-      return await this.childGroupNotFound(parentBook, childBook, parentGroup);
+    try {
+
+      if (childGroup) {
+        return await this.childGroupFound(parentBook, childBook, parentGroup, childGroup);
+      } else {
+        return await this.childGroupNotFound(parentBook, childBook, parentGroup);
+      }
+
+    } catch (err) {
+      throw `Failed to handle group ${parentGroup.name} event: ${err}`;
     }
+
   }
 
   private async getChildBook(parentGroup: bkper.Group): Promise<Book> {
@@ -72,18 +79,18 @@ export abstract class EventHandlerGroup extends EventHandler {
     return null;
   }
 
-  private async getLinkedParentGroupFromEvent(childBook: Book, parentBook: Book, childGroup: bkper.Group, event: bkper.Event): Promise<Group> {
-    let parentGroup = await parentBook.getGroup(childGroup.name);
+  // private async getLinkedParentGroupFromEvent(childBook: Book, parentBook: Book, childGroup: bkper.Group, event: bkper.Event): Promise<Group> {
+  //   let parentGroup = await parentBook.getGroup(childGroup.name);
 
-    if (parentGroup == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
-      parentGroup = await childBook.getGroup(event.data.previousAttributes['name']);
-    }
+  //   if (parentGroup == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
+  //     parentGroup = await childBook.getGroup(event.data.previousAttributes['name']);
+  //   }
 
-    if (parentGroup && parentGroup.getProperty(CHILD_BOOK_ID_PROP) == childBook.getId()) {
-      return parentGroup;
-    }
-    return null;
-  }
+  //   if (parentGroup && parentGroup.getProperty(CHILD_BOOK_ID_PROP) == childBook.getId()) {
+  //     return parentGroup;
+  //   }
+  //   return null;
+  // }
 
   protected async getChildGroupAccountType(childBook: Book, childGroup: bkper.Group): Promise<AccountType> {
     let group = await childBook.getGroup(childGroup.id);

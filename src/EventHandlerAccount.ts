@@ -23,11 +23,16 @@ export abstract class EventHandlerAccount extends EventHandler {
       childAccount = await childBook.getAccount(event.data.previousAttributes['name']);
     }
 
-    if (childAccount) {
-      return await this.childAccountFound(parentBook, childBook, parentAccount, childAccount);
-    } else {
-      return await this.childAccountNotFound(parentBook, childBook, parentAccount);
+    try {
+      if (childAccount) {
+        return await this.childAccountFound(parentBook, childBook, parentAccount, childAccount);
+      } else {
+        return await this.childAccountNotFound(parentBook, childBook, parentAccount);
+      }
+    } catch (err) {
+      throw `Failed to handle account ${parentAccount.name} event: ${err}`;
     }
+
   }
 
   private async getChildBook(parentBook: Book, parentAccount: bkper.Account): Promise<Book> {
