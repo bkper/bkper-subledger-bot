@@ -1,5 +1,5 @@
-import { Account, Book, Transaction } from "bkper";
-import { CHILD_FROM_PROP, CHILD_TO_PROP } from "./constants";
+import { Account, Amount, Book, Transaction } from "bkper";
+import { CHILD_FROM_PROP, CHILD_TO_PROP, PARENT_AMOUNT } from "./constants";
 import { EventHandlerTransaction } from "./EventHandlerTransaction";
 
 export class EventHandlerTransactionChecked extends EventHandlerTransaction {
@@ -37,13 +37,17 @@ export class EventHandlerTransactionChecked extends EventHandlerTransaction {
     let parentCreditAccount = await this.getParentAccount(childBook, parentBook, childCreditAccount);
     let parentDebitAccount = await this.getParentAccount(childBook, parentBook, childDebitAccount);
 
+    let amount = this.getAmount(parentBook, childTransaction);
+    if (amount == null) {
+      return null;
+    }
 
     let parentTransaction = parentBook.newTransaction()
       .setDate(childTransaction.date)
       .setProperties(childTransaction.properties)
       .setProperty(CHILD_FROM_PROP, childCreditAccount.getName())
       .setProperty(CHILD_TO_PROP, childDebitAccount.getName())      
-      .setAmount(childTransaction.amount)
+      .setAmount(amount)
       .setCreditAccount(parentCreditAccount)
       .setDebitAccount(parentDebitAccount)
       .setDescription(childTransaction.description)

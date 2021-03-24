@@ -43,36 +43,41 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
       await parentTransaction.uncheck();
     }
 
-    parentTransaction
-      .setDate(childTransaction.date)
-      .setProperties(childTransaction.properties)
-      .setProperty(CHILD_FROM_PROP, childCreditAccount.getName())
-      .setProperty(CHILD_TO_PROP, childDebitAccount.getName())      
-      .setAmount(childTransaction.amount)
-      .setCreditAccount(parentCreditAccount)
-      .setDebitAccount(parentDebitAccount)
-      .setDescription(childTransaction.description)
-      .addRemoteId(childTransaction.id);
+    let amount = this.getAmount(parentBook, childTransaction);
+    if (amount) {
+      parentTransaction
+        .setDate(childTransaction.date)
+        .setProperties(childTransaction.properties)
+        .setProperty(CHILD_FROM_PROP, childCreditAccount.getName())
+        .setProperty(CHILD_TO_PROP, childDebitAccount.getName())
+        .setAmount(amount)
+        .setCreditAccount(parentCreditAccount)
+        .setDebitAccount(parentDebitAccount)
+        .setDescription(childTransaction.description)
+        .addRemoteId(childTransaction.id);
 
 
-    let urls = childTransaction.urls;
-    if (!urls) {
-      urls = [];
+      let urls = childTransaction.urls;
+      if (!urls) {
+        urls = [];
+      }
+
+      if (childTransaction.urls) {
+        urls = childTransaction.urls;
+      }
+
+      if (childTransaction.files) {
+        childTransaction.files.forEach(file => {
+          urls.push(file.url);
+        });
+      }
+
+      parentTransaction.setUrls(urls);
+
+      await parentTransaction.update();
+
     }
 
-    if (childTransaction.urls) {
-      urls = childTransaction.urls;
-    }
-
-    if (childTransaction.files) {
-      childTransaction.files.forEach(file => {
-        urls.push(file.url);
-      });
-    }
-
-    parentTransaction.setUrls(urls);
-
-    await parentTransaction.update();
   }
 
 

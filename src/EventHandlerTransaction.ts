@@ -1,5 +1,5 @@
 import { Account, AccountType, Amount, Book, Group, Transaction } from "bkper";
-import { PARENT_ACCOUNT_PROP } from "./constants";
+import { PARENT_ACCOUNT_PROP, PARENT_AMOUNT } from "./constants";
 import { EventHandler } from "./EventHandler";
 
 export interface AmountDescription {
@@ -84,6 +84,20 @@ export abstract class EventHandlerTransaction extends EventHandler {
 
   protected async isReadyToPost(newTransaction: Transaction) {
     return await newTransaction.getCreditAccount() != null && await newTransaction.getDebitAccount() != null && newTransaction.getAmount() != null;
+  }
+
+  protected getAmount(parentBook: Book, childTransaction: bkper.Transaction): Amount {
+    let parentAmountProp = childTransaction.properties[PARENT_AMOUNT];
+    if (parentAmountProp) {
+      let parentAmount = parentBook.parseValue(parentAmountProp);
+      if (!parentAmount || parentAmount.eq('0')) {
+        return null;
+      } else {
+        return parentAmount;
+      }
+    } else {
+      return new Amount(childTransaction.amount);
+    }
   }
 
   protected abstract getTransactionQuery(childTransaction: bkper.Transaction): string;

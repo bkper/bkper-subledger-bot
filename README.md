@@ -27,5 +27,9 @@ The Subledger bot is triggered on ```TRANSACTION_POSTED``` event, and roll the t
 
 - ```parent_account```: The name of the parent account to bind the child group to.
 
+### Child Transaction property
+
+- ```parent_amount```: The amount to use when rolling out the transaction into parent. 0 to skip rollout.
+
 
 

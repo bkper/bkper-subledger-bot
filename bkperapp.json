@@ -37,6 +37,11 @@
         "child_book_id",
         "parent_account"
       ]
+    },
+    "transaction": {
+      "keys": [
+        "parent_amount"
+      ]
     }
   }
 }
