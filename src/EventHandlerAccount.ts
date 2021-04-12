@@ -56,32 +56,32 @@ export abstract class EventHandlerAccount extends EventHandler {
   protected abstract parentAccountFound(childBook: Book, parentBook: Book, childAccount: Account, parentAccount: Account): Promise<string>;
 
   async processChildBookEvent(childBook: Book, parentBook: Book, event: bkper.Event): Promise<string> {
-    let childAccountJson = event.data.object as bkper.Account;
-    let childAccount = await childBook.getAccount(childAccountJson.id);
+    // let childAccountJson = event.data.object as bkper.Account;
+    // let childAccount = await childBook.getAccount(childAccountJson.id);
 
-    if (childAccount.getGroups()) {
-      for (const childGroup of await childAccount.getGroups()) {
-        // Roll up into one group
-        if (childGroup.getProperty(PARENT_ACCOUNT_PROP)) {
-          let parentAccount = await parentBook.getAccount(childGroup.getProperty(PARENT_ACCOUNT_PROP));
-          if (!parentAccount) {
-            // Only create if not found yet. This should never occur because it will be ready created by grou event
-            return await this.parentAccountNotFound(childBook, parentBook, childAccount);
-          }
-        } else if (await this.getLinkedParentGroup(childBook, parentBook, childGroup)) {
-          // // Roll up 1-1
-          // let parentAccount = await parentBook.getAccount(childAccount.getName());
-          // if (parentAccount == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
-          //   parentAccount = await childBook.getAccount(event.data.previousAttributes['name']);
-          // }
-          // if (parentAccount) {
-          //   return await this.parentAccountFound(childBook, parentBook, childAccount, parentAccount);
-          // } else {
-          //   return await this.parentAccountNotFound(childBook, parentBook, childAccount);
-          // }
-        }
-      }
-    }
+    // if (childAccount.getGroups()) {
+    //   for (const childGroup of await childAccount.getGroups()) {
+    //     // Roll up into one group
+    //     if (childGroup.getProperty(PARENT_ACCOUNT_PROP)) {
+    //       // let parentAccount = await parentBook.getAccount(childGroup.getProperty(PARENT_ACCOUNT_PROP));
+    //       // if (!parentAccount) {
+    //       //   // Only create if not found yet. This should never occur because it will be ready created by grou event
+    //       //   return await this.parentAccountNotFound(childBook, parentBook, childAccount);
+    //       // }
+    //     } else if (await this.getLinkedParentGroup(childBook, parentBook, childGroup)) {
+    //       // // Roll up 1-1
+    //       // let parentAccount = await parentBook.getAccount(childAccount.getName());
+    //       // if (parentAccount == null && (event.data.previousAttributes && event.data.previousAttributes['name'])) {
+    //       //   parentAccount = await childBook.getAccount(event.data.previousAttributes['name']);
+    //       // }
+    //       // if (parentAccount) {
+    //       //   return await this.parentAccountFound(childBook, parentBook, childAccount, parentAccount);
+    //       // } else {
+    //       //   return await this.parentAccountNotFound(childBook, parentBook, childAccount);
+    //       // }
+    //     }
+    //   }
+    // }
     return null;
   }
 
