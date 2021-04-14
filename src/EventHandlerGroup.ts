@@ -51,7 +51,7 @@ export abstract class EventHandlerGroup extends EventHandler {
   // child >> parent
   protected abstract parentAccountNotFound(childBook: Book, parentBook: Book, childGroup: bkper.Group): Promise<string>;
   protected abstract parentAccountFound(childBook: Book, parentBook: Book, childGroup: bkper.Group, parentAccount: Account): Promise<string>;
-  protected abstract parentGroupFound(childBook: Book, parentBook: Book, childGroup: bkper.Group, parentGroup: Group): Promise<string>;
+  // protected abstract parentGroupFound(childBook: Book, parentBook: Book, childGroup: bkper.Group, parentGroup: Group): Promise<string>;
   
   protected async processChildBookEvent(childBook: Book, parentBook: Book, event: bkper.Event): Promise<string> {
 

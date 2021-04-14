@@ -35,10 +35,10 @@ export class EventHandlerGroupDeleted extends EventHandlerGroup {
     let bookAnchor = super.buildBookAnchor(parentBook);
     return `${bookAnchor}: PARENT GROUP ${childGroup.name} NOT Found`;
   }
-  async parentGroupFound(childBook: Book, parentBook: Book, childGroup: bkper.Group, parentGroup: Group): Promise<string> {
-    let bookAnchor = super.buildBookAnchor(parentBook);
-    await parentGroup.remove();
-    return `${bookAnchor}: PARENT GROUP ${parentGroup.getName()} DELETED`;
-  }
+  // async parentGroupFound(childBook: Book, parentBook: Book, childGroup: bkper.Group, parentGroup: Group): Promise<string> {
+  //   let bookAnchor = super.buildBookAnchor(parentBook);
+  //   await parentGroup.remove();
+  //   return `${bookAnchor}: PARENT GROUP ${parentGroup.getName()} DELETED`;
+  // }
 
 }

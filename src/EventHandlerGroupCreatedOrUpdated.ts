@@ -50,16 +50,16 @@ export class EventHandlerGroupCreatedOrUpdated extends EventHandlerGroup {
     return `${bookAnchor}: PARENT ACCOUNT ${parentAccount.getName()} UPDATED`;
   }
 
-  async parentGroupFound(childBook: Book, parentBook: Book, childGroup: bkper.Group, parentGroup: Group): Promise<string> {
-    let parentGroupChildBookId = parentGroup.getProperty(CHILD_BOOK_ID_PROP)
-    console.log(`UPDATE: ${childGroup.name}`)
-    await parentGroup
-      .setName(childGroup.name)
-      .setProperties(childGroup.properties)
-      .setProperty(CHILD_BOOK_ID_PROP, parentGroupChildBookId)
-      .update();
-    let bookAnchor = super.buildBookAnchor(parentBook);
-    return `${bookAnchor}: PARENT GROUP ${parentGroup.getName()} UPDATED`;
-  }
+  // async parentGroupFound(childBook: Book, parentBook: Book, childGroup: bkper.Group, parentGroup: Group): Promise<string> {
+  //   let parentGroupChildBookId = parentGroup.getProperty(CHILD_BOOK_ID_PROP)
+  //   console.log(`UPDATE: ${childGroup.name}`)
+  //   await parentGroup
+  //     .setName(childGroup.name)
+  //     .setProperties(childGroup.properties)
+  //     .setProperty(CHILD_BOOK_ID_PROP, parentGroupChildBookId)
+  //     .update();
+  //   let bookAnchor = super.buildBookAnchor(parentBook);
+  //   return `${bookAnchor}: PARENT GROUP ${parentGroup.getName()} UPDATED`;
+  // }
 
 }
