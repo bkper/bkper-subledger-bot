@@ -40,36 +40,36 @@ export class EventHandlerAccountCreatedOrUpdated extends EventHandlerAccount {
   }
 
   // child >> parent
-  async parentAccountNotFound(childBook: Book, parentBook: Book, childAccount: Account): Promise<string> {
-    let parentAccount = childBook.newAccount();
-    await this.syncParentAccount(childBook, parentBook, childAccount, parentAccount);
-    await parentAccount.create();
-    let bookAnchor = super.buildBookAnchor(parentBook);
-    return `${bookAnchor}: PARENT ACCOUNT ${parentAccount.getName()} CREATED`;
-  }
+  // async parentAccountNotFound(childBook: Book, parentBook: Book, childAccount: Account): Promise<string> {
+  //   let parentAccount = childBook.newAccount();
+  //   await this.syncParentAccount(childBook, parentBook, childAccount, parentAccount);
+  //   await parentAccount.create();
+  //   let bookAnchor = super.buildBookAnchor(parentBook);
+  //   return `${bookAnchor}: PARENT ACCOUNT ${parentAccount.getName()} CREATED`;
+  // }
 
-  async parentAccountFound(childBook: Book, parentBook: Book, childAccount: Account, parentAccount: Account): Promise<string> {
-    await this.syncParentAccount(childBook, parentBook, childAccount, parentAccount);
-    await parentAccount.update();
-    let bookAnchor = super.buildBookAnchor(parentBook);
-    return `${bookAnchor}: PARENT ACCOUNT ${parentAccount.getName()} UPDATED`;
-  }
+  // async parentAccountFound(childBook: Book, parentBook: Book, childAccount: Account, parentAccount: Account): Promise<string> {
+  //   await this.syncParentAccount(childBook, parentBook, childAccount, parentAccount);
+  //   await parentAccount.update();
+  //   let bookAnchor = super.buildBookAnchor(parentBook);
+  //   return `${bookAnchor}: PARENT ACCOUNT ${parentAccount.getName()} UPDATED`;
+  // }
 
-  protected async syncParentAccount(childBook: Book, parentBook: Book, childAccount: Account, parentAccount: Account) {
-    parentAccount.setGroups([]);
-    parentAccount.setName(childAccount.getName())
-      .setType(childAccount.getType())
-      .setProperties(childAccount.getProperties())
-      .setArchived(childAccount.isArchived());
-    if (childAccount.getGroups()) {
-      for (const childGroup of await childAccount.getGroups()) {
-        let parentGroup = await this.getLinkedParentGroup(childBook, parentBook, childGroup);
-        if (parentGroup) {
-          parentAccount.addGroup(parentGroup);
-        }
-      }
-    }
-  }
+  // protected async syncParentAccount(childBook: Book, parentBook: Book, childAccount: Account, parentAccount: Account) {
+  //   parentAccount.setGroups([]);
+  //   parentAccount.setName(childAccount.getName())
+  //     .setType(childAccount.getType())
+  //     .setProperties(childAccount.getProperties())
+  //     .setArchived(childAccount.isArchived());
+  //   if (childAccount.getGroups()) {
+  //     for (const childGroup of await childAccount.getGroups()) {
+  //       let parentGroup = await this.getLinkedParentGroup(childBook, parentBook, childGroup);
+  //       if (parentGroup) {
+  //         parentAccount.addGroup(parentGroup);
+  //       }
+  //     }
+  //   }
+  // }
 
 
 

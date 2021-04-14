@@ -52,8 +52,8 @@ export abstract class EventHandlerAccount extends EventHandler {
 
 
   // child >> parent
-  protected abstract parentAccountNotFound(childBook: Book, parentBook: Book, childAccount: Account): Promise<string>;
-  protected abstract parentAccountFound(childBook: Book, parentBook: Book, childAccount: Account, parentAccount: Account): Promise<string>;
+  // protected abstract parentAccountNotFound(childBook: Book, parentBook: Book, childAccount: Account): Promise<string>;
+  // protected abstract parentAccountFound(childBook: Book, parentBook: Book, childAccount: Account, parentAccount: Account): Promise<string>;
 
   async processChildBookEvent(childBook: Book, parentBook: Book, event: bkper.Event): Promise<string> {
     // let childAccountJson = event.data.object as bkper.Account;

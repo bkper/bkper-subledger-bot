@@ -21,18 +21,18 @@ export class EventHandlerAccountDeleted extends EventHandlerAccount {
 
 
   // child >> parent
-  async parentAccountNotFound(childBook: Book, parentBook: Book, childAccount: Account): Promise<string> {
-    let bookAnchor = super.buildBookAnchor(parentBook);
-    return `${bookAnchor}: PARENT ACCOUNT ${childAccount.getName()} NOT Found`;
-  }
-  async parentAccountFound(childBook: Book, parentBook: Book, childAccount: Account, parentAccount: Account): Promise<string> {
-    let bookAnchor = super.buildBookAnchor(parentBook);
-    if (parentAccount.hasTransactionPosted()) {
-      await parentAccount.remove();
-      return `${bookAnchor}: PARENT ACCOUNT ${parentAccount.getName()} DELETED`;
-    } else {
-      await parentAccount.setArchived(true).update();
-      return `${bookAnchor}: PARENT ACCOUNT ${parentAccount.getName()} ARCHIVED`;
-    }
-  }
+  // async parentAccountNotFound(childBook: Book, parentBook: Book, childAccount: Account): Promise<string> {
+  //   let bookAnchor = super.buildBookAnchor(parentBook);
+  //   return `${bookAnchor}: PARENT ACCOUNT ${childAccount.getName()} NOT Found`;
+  // }
+  // async parentAccountFound(childBook: Book, parentBook: Book, childAccount: Account, parentAccount: Account): Promise<string> {
+  //   let bookAnchor = super.buildBookAnchor(parentBook);
+  //   if (parentAccount.hasTransactionPosted()) {
+  //     await parentAccount.remove();
+  //     return `${bookAnchor}: PARENT ACCOUNT ${parentAccount.getName()} DELETED`;
+  //   } else {
+  //     await parentAccount.setArchived(true).update();
+  //     return `${bookAnchor}: PARENT ACCOUNT ${parentAccount.getName()} ARCHIVED`;
+  //   }
+  // }
 }
