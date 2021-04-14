@@ -41,15 +41,15 @@ export abstract class EventHandler {
     return AccountType.ASSET;
   }
 
-  // protected async getLinkedParentGroup(childBook: Book, parentBook: Book, childGroup: Group): Promise<Group> {
-  //   if (childGroup == null) {
-  //     return null;
-  //   }
-  //   let parentGroup = await parentBook.getGroup(childGroup.getName());
-  //   if (parentGroup && parentGroup.getProperty(CHILD_BOOK_ID_PROP) == childBook.getId()) {
-  //     return parentGroup;
-  //   }
-  //   return null;
-  // }
+  protected async getLinkedParentGroup(childBook: Book, parentBook: Book, childGroup: Group): Promise<Group> {
+    if (childGroup == null) {
+      return null;
+    }
+    let parentGroup = await parentBook.getGroup(childGroup.getName());
+    if (parentGroup && parentGroup.getProperty(CHILD_BOOK_ID_PROP) == childBook.getId()) {
+      return parentGroup;
+    }
+    return null;
+  }
 
 }
