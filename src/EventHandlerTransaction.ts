@@ -59,25 +59,25 @@ export abstract class EventHandlerTransaction extends EventHandler {
         return parentAccount;
       }
       
-      const linkedParentGroup = await this.getLinkedParentGroup(childBook, parentBook, childGroup);
+      // const linkedParentGroup = await this.getLinkedParentGroup(childBook, parentBook, childGroup);
 
-      if (linkedParentGroup) {
-        let parentAccountName = childAccount.getName();
-        let parentAccount = await parentBook.getAccount(parentAccountName);
-        if (parentAccount == null) {
-          try {
-            parentAccount = await parentBook.newAccount()
-              .setName(parentAccountName)
-              .setType(childAccount.getType());
-              await parentAccount.addGroup(linkedParentGroup);
-              parentAccount.create()
-          } catch (err) {
-            console.log(err)
-            return null;
-          }
-        }
-        return parentAccount;
-      }
+      // if (linkedParentGroup) {
+      //   let parentAccountName = childAccount.getName();
+      //   let parentAccount = await parentBook.getAccount(parentAccountName);
+      //   if (parentAccount == null) {
+      //     try {
+      //       parentAccount = await parentBook.newAccount()
+      //         .setName(parentAccountName)
+      //         .setType(childAccount.getType());
+      //         await parentAccount.addGroup(linkedParentGroup);
+      //         parentAccount.create()
+      //     } catch (err) {
+      //       console.log(err)
+      //       return null;
+      //     }
+      //   }
+      //   return parentAccount;
+      // }
     }
     return null;
   }
