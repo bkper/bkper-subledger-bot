@@ -9,6 +9,7 @@ Accounts or Groups in the Subledger are associated to Accounts in the general le
 
 A Subledger may contain, for example, only the details of the [Accounts Receivable](https://help.bkper.com/en/articles/2569170-accounts-receivable) or [Accounts Payable](https://help.bkper.com/en/articles/2569171-accounts-payable) and be shared with a specific department of the business without access to sensitive general ledger account balances and transactions.
 
+[Learn more...](https://help.bkper.com/en/articles/4859083-subledger-bot)
 
 ## Configuration
 
@@ -31,5 +32,7 @@ The Subledger bot is triggered on ```TRANSACTION_POSTED``` event, and roll the t
 
 - ```parent_amount```: The amount to use when rolling out the transaction into parent. 0 to skip rollout.
 
+
+See the [Subledger Bot help article](https://help.bkper.com/en/articles/4859083-subledger-bot) for a working example.
 
 
