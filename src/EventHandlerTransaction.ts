@@ -14,6 +14,7 @@ export abstract class EventHandlerTransaction extends EventHandler {
     return null;
   }
 
+  // child >> parent
   async processChildBookEvent(childBook: Book, parentBook: Book, event: bkper.Event): Promise<string> {
 
     let operation = event.data.object as bkper.TransactionOperation;
@@ -64,18 +65,6 @@ export abstract class EventHandlerTransaction extends EventHandler {
       if (linkedParentGroup) {
         let parentAccountName = childAccount.getName();
         let parentAccount = await parentBook.getAccount(parentAccountName);
-        if (parentAccount == null) {
-          try {
-            parentAccount = parentBook.newAccount()
-              .setName(parentAccountName)
-              .setType(childAccount.getType());
-              await parentAccount.addGroup(linkedParentGroup);
-              parentAccount.create()
-          } catch (err) {
-            console.log(err)
-            return null;
-          }
-        }
         return parentAccount;
       }
     }
