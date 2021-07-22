@@ -50,7 +50,7 @@ export abstract class EventHandlerTransaction extends EventHandler {
           try {
             parentAccount = await parentBook.newAccount()
               .setName(parentAccountName)
-              .setType(await this.getGroupAccountType(childGroup))
+              .setType(childGroup.getType())
               .create()
           } catch (err) {
             console.log(err)

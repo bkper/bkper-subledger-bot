@@ -96,7 +96,7 @@ export abstract class EventHandlerGroup extends EventHandler {
 
   protected async getChildGroupAccountType(childBook: Book, childGroup: bkper.Group): Promise<AccountType> {
     let group = await childBook.getGroup(childGroup.id);
-    return super.getGroupAccountType(group);
+    return group.getType();
   }
 
 }

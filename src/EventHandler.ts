@@ -29,16 +29,9 @@ export abstract class EventHandler {
     return response;
   }
 
+  
   protected buildBookAnchor(book: Book) {
     return `<a href='https://app.bkper.com/b/#transactions:bookId=${book.getId()}'>${book.getName()}</a>`;
-  }
-
-  protected async getGroupAccountType(group: Group): Promise<AccountType> {
-    let accounts = await group.getAccounts();
-    for (const account of accounts) {
-      return account.getType();
-    }
-    return AccountType.ASSET;
   }
 
   protected async getLinkedParentGroup(childBook: Book, parentBook: Book, childGroup: Group): Promise<Group> {
