@@ -37,8 +37,8 @@ export abstract class EventHandlerAccount extends EventHandler {
 
   private async getChildBook(parentBook: Book, parentAccount: bkper.Account): Promise<Book> {
     if (parentAccount.groups) {
-      for (const groupId of parentAccount.groups) {
-        let group = await parentBook.getGroup(groupId);
+      for (const g of parentAccount.groups) {
+        let group = await parentBook.getGroup(g.id);
         if (group.getProperty(CHILD_BOOK_ID_PROP)) {
           return Bkper.getBook(group.getProperty(CHILD_BOOK_ID_PROP));
         }
