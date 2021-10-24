@@ -1,6 +1,6 @@
 {
   "name": "subledger-bot",
-  "version": "1.4.22",
+  "version": "1.4.23",
   "license": "MIT",
   "main": "index.js",
   "projectId": "bkper-subledger-bot",
