@@ -10,7 +10,7 @@ export abstract class EventHandler {
   protected abstract processChildBookEvent(childBook: Book, parentBook: Book, event: bkper.Event): Promise<string>;
 
   async handleEvent(event: bkper.Event): Promise<string | boolean> {
-    let baseBook = Bkper.newBook(event.book);
+    let baseBook = new Book(event.book);
     let parentBookId = baseBook.getProperty(PARENT_BOOK_ID_PROP, 'parent_book');
 
     let response = null;
