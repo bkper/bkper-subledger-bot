@@ -57,6 +57,11 @@ export abstract class EventHandlerTransaction extends EventHandler {
             return null;
           }
         }
+
+        if (parentAccount == null) {
+            parentAccount = await parentBook.getAccount(childAccount.getName());
+        }
+
         return parentAccount;
       }
       
