@@ -58,10 +58,6 @@ export abstract class EventHandlerTransaction extends EventHandler {
           }
         }
 
-        if (parentAccount == null) {
-            parentAccount = await parentBook.getAccount(childAccount.getName());
-        }
-
         return parentAccount;
       }
       
@@ -73,7 +69,9 @@ export abstract class EventHandlerTransaction extends EventHandler {
         return parentAccount;
       }
     }
-    return null;
+
+    //Falback for account with same name as child
+    return await parentBook.getAccount(childAccount.getName());
   }
 
   protected async isReadyToPost(newTransaction: Transaction) {
