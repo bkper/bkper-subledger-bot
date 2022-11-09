@@ -10,8 +10,6 @@
   "repoUrl": "https://github.com/bkper/subledger-bot",
   "repoPrivate": false,
   "deprecated": false,
-  "clientId": "1090047264364-8d3kjg91okm80vifv3rn4crgoqr54k2j.apps.googleusercontent.com",
-  "scopes": ["https://www.googleapis.com/auth/userinfo.email"],
   "webhookUrl": "https://us-central1-bkper-subledger-bot.cloudfunctions.net/prod",
   "apiVersion": "v5",
   "events": [
