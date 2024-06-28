@@ -13,6 +13,11 @@ export abstract class EventHandler {
     let baseBook = new Book(event.book);
     let parentBookId = baseBook.getProperty(PARENT_BOOK_ID_PROP, 'parent_book');
 
+    if (event.agent.id == 'exchange-bot') {
+      console.log("Skipping Exchange Bot Agent.");
+      return false;
+    } 
+
     let response = null;
     if (parentBookId) {
       let parentBook = await Bkper.getBook(parentBookId);
