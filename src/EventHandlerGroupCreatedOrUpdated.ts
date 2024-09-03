@@ -1,6 +1,6 @@
-import { Account, Book, Group } from "bkper";
-import { CHILD_BOOK_ID_PROP, PARENT_ACCOUNT_PROP } from "./constants";
-import { EventHandlerGroup } from "./EventHandlerGroup";
+import { Account, Book, Group } from "bkper-js";
+import { CHILD_BOOK_ID_PROP, PARENT_ACCOUNT_PROP } from "./constants.js";
+import { EventHandlerGroup } from "./EventHandlerGroup.js";
 
 export class EventHandlerGroupCreatedOrUpdated extends EventHandlerGroup {
 

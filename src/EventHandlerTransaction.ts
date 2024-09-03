@@ -1,6 +1,6 @@
-import { Account, AccountType, Amount, Book, Group, Transaction } from "bkper";
-import { PARENT_ACCOUNT_PROP, PARENT_AMOUNT } from "./constants";
-import { EventHandler } from "./EventHandler";
+import { Account, AccountType, Amount, Book, Group, Transaction } from "bkper-js";
+import { PARENT_ACCOUNT_PROP, PARENT_AMOUNT } from "./constants.js";
+import { EventHandler } from "./EventHandler.js";
 
 export interface AmountDescription {
   amount: Amount;

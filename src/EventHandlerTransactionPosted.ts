@@ -1,6 +1,6 @@
-import { Account, Book, Transaction } from "bkper";
-import { CHILD_FROM_PROP, CHILD_TO_PROP } from "./constants";
-import { EventHandlerTransaction } from "./EventHandlerTransaction";
+import { Account, Book, Transaction } from "bkper-js";
+import { CHILD_FROM_PROP, CHILD_TO_PROP } from "./constants.js";
+import { EventHandlerTransaction } from "./EventHandlerTransaction.js";
 
 export class EventHandlerTransactionPosted extends EventHandlerTransaction {
 

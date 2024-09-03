@@ -1,17 +1,20 @@
-const ngrok = require('ngrok');
-const Bkper = require('bkper').Bkper;
-
-//Ensure env at right location
-require('dotenv').config();
+import { connect } from 'ngrok';
+import { Bkper } from 'bkper-js';
+import { getBkperLocalConfig } from 'bkper'
+import { App } from 'bkper-js';
 
 process.env.NODE_ENV='development';
-
-const app = Bkper.setApiKey(process.env.BKPER_API_KEY);
+Bkper.setConfig(getBkperLocalConfig())
+const app = new App();
 
 (async function() {
-  const url = await ngrok.connect({ port: 3004 });
-  console.log(`Started ngrok at ${url}`);
-  await app.setWebhookUrlDev(url).patch()
+  try {
+    const url = await connect({ port: 3004 });
+    console.log(`Started ngrok at ${url}`);
+    await app.setWebhookUrlDev(url).patch()
+  } catch (err) {
+    console.log(err);
+  }
 })();
 
 

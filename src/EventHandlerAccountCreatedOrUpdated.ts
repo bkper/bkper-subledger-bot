@@ -1,6 +1,6 @@
-import { Account, AccountType, Book } from "bkper";
-import { CHILD_BOOK_ID_PROP, PARENT_ACCOUNT_PROP } from "./constants";
-import { EventHandlerAccount } from "./EventHandlerAccount";
+import { Account, AccountType, Book } from "bkper-js";
+import { CHILD_BOOK_ID_PROP } from "./constants.js";
+import { EventHandlerAccount } from "./EventHandlerAccount.js";
 
 export class EventHandlerAccountCreatedOrUpdated extends EventHandlerAccount {
 

@@ -1,20 +1,21 @@
 import { HttpFunction } from '@google-cloud/functions-framework/build/src/functions';
-import { Bkper } from 'bkper';
+import { Bkper } from 'bkper-js';
 import { Request, Response } from 'express';
-import 'source-map-support/register';
-import { EventHandlerGroupCreatedOrUpdated } from './EventHandlerGroupCreatedOrUpdated';
-import { EventHandlerGroupDeleted } from './EventHandlerGroupDeleted';
-import { EventHandlerTransactionChecked } from './EventHandlerTransactionChecked';
-import { EventHandlerTransactionDeleted } from './EventHandlerTransactionDeleted';
-import { EventHandlerTransactionRestored } from './EventHandlerTransactionRestored';
-import { EventHandlerTransactionUpdated } from './EventHandlerTransactionUpdated';
-import express = require('express');
-import httpContext = require('express-http-context');
-import { EventHandlerTransactionPosted } from './EventHandlerTransactionPosted';
-import { EventHandlerAccountCreatedOrUpdated } from './EventHandlerAccountCreatedOrUpdated';
-import { EventHandlerAccountDeleted } from './EventHandlerAccountDeleted';
+import 'source-map-support/register.js';
+import { EventHandlerGroupCreatedOrUpdated } from './EventHandlerGroupCreatedOrUpdated.js';
+import { EventHandlerGroupDeleted } from './EventHandlerGroupDeleted.js';
+import { EventHandlerTransactionChecked } from './EventHandlerTransactionChecked.js';
+import { EventHandlerTransactionDeleted } from './EventHandlerTransactionDeleted.js';
+import { EventHandlerTransactionRestored } from './EventHandlerTransactionRestored.js';
+import { EventHandlerTransactionUpdated } from './EventHandlerTransactionUpdated.js';
+import express from 'express';
+import httpContext from 'express-http-context';
+import { EventHandlerTransactionPosted } from './EventHandlerTransactionPosted.js';
+import { EventHandlerAccountCreatedOrUpdated } from './EventHandlerAccountCreatedOrUpdated.js';
+import { EventHandlerAccountDeleted } from './EventHandlerAccountDeleted.js';
 
-require('dotenv').config()
+import dotenv from 'dotenv';
+dotenv.config()
 
 const app = express();
 app.use(httpContext.middleware);
@@ -89,6 +90,7 @@ async function handleEvent(req: Request, res: Response) {
 
   } catch (err) {
     console.error(err);
+    //@ts-ignore
     res.send(response({ error: err.stack ? err.stack.split("\n") : err }))
   }
 

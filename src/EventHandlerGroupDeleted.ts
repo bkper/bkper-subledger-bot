@@ -1,5 +1,5 @@
-import { Account, Book, Group } from "bkper";
-import { EventHandlerGroup } from "./EventHandlerGroup";
+import { Account, Book, Group } from "bkper-js";
+import { EventHandlerGroup } from "./EventHandlerGroup.js";
 
 export class EventHandlerGroupDeleted extends EventHandlerGroup {
 

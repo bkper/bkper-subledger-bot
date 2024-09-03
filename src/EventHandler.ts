@@ -1,5 +1,5 @@
-import { AccountType, Bkper, Book, Group } from "bkper";
-import { CHILD_BOOK_ID_PROP, PARENT_BOOK_ID_PROP } from "./constants";
+import { AccountType, Bkper, Book, Group } from "bkper-js";
+import { CHILD_BOOK_ID_PROP, PARENT_BOOK_ID_PROP } from "./constants.js";
 
 export abstract class EventHandler {
 
