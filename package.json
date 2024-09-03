@@ -21,7 +21,7 @@
     "functions:enable": "gcloud services enable cloudfunctions.googleapis.com --project $npm_package_projectId && gcloud services enable cloudbuild.googleapis.com --project $npm_package_projectId",
     "functions:authorize": "gcloud alpha functions add-iam-policy-binding $npm_package_functionName --member=serviceAccount:bkper-hrd@appspot.gserviceaccount.com --role=roles/cloudfunctions.invoker --project $npm_package_projectId",
     "functions:open": "open \"https://console.cloud.google.com/functions/details/us-central1/$npm_package_functionName?organizationId=305881217394&project=$npm_package_projectId&tab=logs\"",
-    "open": "bun functions:open",
+    "open": "yarn functions:open",
     "deploy": "bun run build && yarn --cwd dist/ deploy:dist",
     "deploy:dist": "gcloud functions deploy $npm_package_functionName --runtime nodejs18 --trigger-http --entry-point doPost --max-instances 5 --memory 128MB --timeout 360 --project $npm_package_projectId",
     "preversion": "yarn deploy",
