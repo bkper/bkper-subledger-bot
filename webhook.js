@@ -1,10 +1,17 @@
 import { connect } from 'ngrok';
 import { Bkper } from 'bkper-js';
-import { getBkperLocalConfig } from 'bkper'
+import { getOAuthToken } from 'bkper'
 import { App } from 'bkper-js';
+import dotenv from 'dotenv';
+dotenv.config()
 
 process.env.NODE_ENV='development';
-Bkper.setConfig(getBkperLocalConfig())
+
+Bkper.setConfig({
+  oauthTokenProvider: () => getOAuthToken(),
+  apiKeyProvider: () => process.env.BKPER_API_KEY,
+})
+
 const app = new App();
 
 (async function() {
