@@ -8,7 +8,7 @@
   "functionName": "prod",
   "scripts": {
     "clean": "gts clean",
-    "upgrade:app": "bun update bkper-js --latest",
+    "upgrade:js": "bun update bkper-js --latest",
     "upgrade:api": "bun update @bkper/bkper-api-types --latest",
     "bkper:sync": "bkper app -u",
     "prebuild": "bun install --yarn",
@@ -38,7 +38,7 @@
   "dependencies": {
     "@google-cloud/functions-framework": "^2.0.0",
     "bkper": "^3.2.0",
-    "bkper-js": "^1.2.1",
+    "bkper-js": "^1.2.3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-http-context": "^1.2.4",
