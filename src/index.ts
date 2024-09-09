@@ -1,6 +1,5 @@
 import { HttpFunction } from '@google-cloud/functions-framework/build/src/functions';
 import { Bkper } from 'bkper-js';
-import { getOAuthToken } from 'bkper'
 import { Request, Response } from 'express';
 import 'source-map-support/register.js';
 import { EventHandlerGroupCreatedOrUpdated } from './EventHandlerGroupCreatedOrUpdated.js';
@@ -31,7 +30,7 @@ function init(req: Request, res: Response) {
   httpContext.set(oauthTokenHeader, req.headers[oauthTokenHeader]);
 
   Bkper.setConfig({
-    oauthTokenProvider: async () => httpContext.get(oauthTokenHeader) || getOAuthToken(),
+    oauthTokenProvider: async () => httpContext.get(oauthTokenHeader) || import('bkper').then(bkper => bkper.getOAuthToken()),
     apiKeyProvider: async () => process.env.BKPER_API_KEY || req.headers['bkper-api-key'] as string
   })
 
