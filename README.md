@@ -19,9 +19,9 @@ The Subledger bot is triggered on ```TRANSACTION_POSTED``` event, and roll the t
 
 - ```parent_book_id```: The id of the parent book, found on ```bookId``` param of the url.
 
-### Child Group property
+### Child Group property or Child Account property
 
-- ```parent_account```: The name of the parent account to bind the child group to.
+- ```parent_account```: The name of the parent account to bind the child group or child account to.
 
 ### Child Transaction property
 
