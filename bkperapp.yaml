@@ -31,6 +31,9 @@ propertiesSchema:
     keys:
       - child_book_id
       - parent_account
+  account:
+    keys:
+      - parent_account
   transaction:
     keys:
       - parent_amount
