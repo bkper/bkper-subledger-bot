@@ -40,6 +40,13 @@ export abstract class EventHandlerTransaction extends EventHandler {
 
   protected async getParentAccount(childBook: Book, parentBook: Book, childAccount: Account): Promise<Account> {
 
+    // If the parent_account property is set directly on the child account, use it to find the parent account
+    if (childAccount.getProperty(PARENT_ACCOUNT_PROP)) {
+      const parentAccountName = childAccount.getProperty(PARENT_ACCOUNT_PROP);
+      const parentAccount = await parentBook.getAccount(parentAccountName);
+      return parentAccount;
+    }
+
     const childGroups = await childAccount.getGroups();
 
     for (const childGroup of childGroups) {
