@@ -1,0 +1,47 @@
+{
+  "name": "subledger-bot",
+  "version": "1.5.5",
+  "license": "MIT",
+  "main": "index.js",
+  "type": "module",
+  "projectId": "bkper-subledger-bot",
+  "functionName": "prod",
+  "scripts": {
+    "clean": "gts clean",
+    "upgrade:js": "bun update bkper-js --latest",
+    "upgrade:api": "bun update @bkper/bkper-api-types --latest",
+    "bkper:sync": "bkper app -u",
+    "prebuild": "bun install --yarn",
+    "build": "bun clean && tsc && cp package.json dist/ && cp yarn.lock dist/",
+    "dev": "run-p dev:*",
+    "dev:compile": "tsc -w --incremental",
+    "dev:webhook": "node webhook",
+    "dev:nodemon": "nodemon --watch ./dist/ --exec bun run functions:dev",
+    "functions:dev": "functions-framework --source=dist/ --target=doPost --port=3004",
+    "functions:enable": "gcloud services enable cloudfunctions.googleapis.com --project $npm_package_projectId && gcloud services enable cloudbuild.googleapis.com --project $npm_package_projectId",
+    "functions:authorize": "gcloud alpha functions add-iam-policy-binding $npm_package_functionName --member=serviceAccount:bkper-hrd@appspot.gserviceaccount.com --role=roles/cloudfunctions.invoker --project $npm_package_projectId",
+    "functions:open": "open \"https://console.cloud.google.com/functions/details/us-central1/$npm_package_functionName?organizationId=305881217394&project=$npm_package_projectId&tab=logs\"",
+    "open": "yarn functions:open",
+    "deploy": "bun run build && yarn --cwd dist/ deploy:dist",
+    "deploy:dist": "gcloud functions deploy $npm_package_functionName --runtime nodejs18 --trigger-http --entry-point doPost --max-instances 5 --memory 128MB --timeout 360 --project $npm_package_projectId"
+  },
+  "devDependencies": {
+    "@bkper/bkper-api-types": "^5.1.1",
+    "@types/express": "^4.17.10",
+    "@types/node": "^14.11.2",
+    "bkper": "^3.3.0",
+    "gts": "^3.0.3",
+    "ngrok": "^5.0.0-beta.2",
+    "nodemon": "^2.0.7",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^2.0.0",
+    "bkper-js": "^1.2.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-http-context": "^1.2.4",
+    "source-map-support": "^0.5.19"
+  }
+}
