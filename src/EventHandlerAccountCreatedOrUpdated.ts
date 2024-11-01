@@ -6,7 +6,7 @@ export class EventHandlerAccountCreatedOrUpdated extends EventHandlerAccount {
 
   // parent >> child
   public async childAccountNotFound(parentBook: Book, childBook: Book, parentAccount: bkper.Account): Promise<string> {
-    let childAccount = childBook.newAccount();
+    let childAccount = new Account(childBook);
     await this.syncChildAccount(parentBook, childBook, parentAccount, childAccount);
     await childAccount.create();
     let bookAnchor = super.buildBookAnchor(childBook);

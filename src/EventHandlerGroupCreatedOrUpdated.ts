@@ -7,7 +7,7 @@ export class EventHandlerGroupCreatedOrUpdated extends EventHandlerGroup {
   // parent >> child
   protected async childGroupNotFound(parentBook: Book, childBook: Book, parentGroup: bkper.Group): Promise<string> {
     console.log(`CREATE: ${parentGroup.name}`)
-    let childGroup = await childBook.newGroup()
+    let childGroup = await new Group(childBook)
       .setName(parentGroup.name)
       .setProperties(parentGroup.properties)
       .deleteProperty(CHILD_BOOK_ID_PROP)
@@ -33,7 +33,7 @@ export class EventHandlerGroupCreatedOrUpdated extends EventHandlerGroup {
 
   protected async parentAccountNotFound(childBook: Book, parentBook: Book, childGroup: bkper.Group): Promise<string> {
     console.log(`CREATE: ${childGroup.properties[PARENT_ACCOUNT_PROP]}`)
-    let parentAccount = await parentBook.newAccount()
+    let parentAccount = await new Account(parentBook)
       .setName(childGroup.properties[PARENT_ACCOUNT_PROP])
       .setType(await this.getChildGroupAccountType(childBook, childGroup))
       .create();

@@ -37,7 +37,7 @@ export class EventHandlerTransactionPosted extends EventHandlerTransaction {
       return null;
     }
 
-    let parentTransaction = parentBook.newTransaction()
+    let parentTransaction = new Transaction(parentBook)
       .setDate(childTransaction.date)
       .setProperties(childTransaction.properties)
       .setProperty(CHILD_FROM_PROP, childCreditAccount.getName())

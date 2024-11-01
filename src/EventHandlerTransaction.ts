@@ -29,12 +29,11 @@ export abstract class EventHandlerTransaction extends EventHandler {
       return null;
     }
 
-    let iterator = parentBook.getTransactions(this.getTransactionQuery(baseTransaction));
-    if (await iterator.hasNext()) {
-      let connectedTransaction = await iterator.next();
+    let connectedTransaction = (await parentBook.listTransactions(this.getTransactionQuery(baseTransaction))).getFirst();
+    if (connectedTransaction) {
       return this.parentTransactionFound(childBook, parentBook, baseTransaction, connectedTransaction);
     } else {
-      return this.parentTransactionNotFound(childBook, parentBook, baseTransaction)
+      return this.parentTransactionNotFound(childBook, parentBook, baseTransaction);
     }
   }
 
@@ -55,7 +54,7 @@ export abstract class EventHandlerTransaction extends EventHandler {
         let parentAccount = await parentBook.getAccount(parentAccountName);
         if (parentAccount == null) {
           try {
-            parentAccount = await parentBook.newAccount()
+            parentAccount = await new Account(parentBook)
               .setName(parentAccountName)
               .setType(childGroup.getType())
               .create()
