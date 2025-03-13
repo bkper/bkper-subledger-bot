@@ -1,7 +1,8 @@
 id: subledger-bot
-name: Subledger Bot
-description: Connect books into Ledger-Subledger relationship
-logoUrl: https://static.thenounproject.com/png/2318601-200.png
+name: Subledger Agent
+description: Automatically connect books in a Ledger-Subledger relationship, synchronizing transactions between parent and child books for consolidated financial reporting.
+logoUrl: https://storage.googleapis.com/bkper-public/logos/agents/subledger-agent-light.svg
+logoUrlDark: https://storage.googleapis.com/bkper-public/logos/agents/subledger-agent-dark.svg
 website: https://bkper.com/apps/subledger-bot
 ownerName: Bkper
 ownerLogoUrl: https://avatars.githubusercontent.com/u/11943086?v=4

@@ -1,5 +1,5 @@
 
-The Subledger Bot connects child books with parent ones, rolling up the Subledger transactions into the parent General Ledger.
+The Subledger Agent connects child books with parent ones, rolling up the Subledger transactions into the parent General Ledger.
 
 Accounts or Groups in the Subledger are associated to Accounts in the general ledger, allowing the Subledger a more granular control as well as its user access to only a subset of accounts.
 
@@ -31,9 +31,5 @@ The Subledger bot is triggered on ```TRANSACTION_POSTED``` event, and roll the t
 
 - ```child_book_id```: The id of the child book bound to the given group, found on ```bookId``` param of the url.
 
-
-
-
-See the [Subledger Bot help article](https://help.bkper.com/en/articles/4859083-subledger-bot) for a working example.
 
 
