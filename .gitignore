@@ -6,3 +6,5 @@ dist/
 tsconfig.tsbuildinfo
 .env
 yarn.lock
+**/bun.lockb
+**/bun.lock
