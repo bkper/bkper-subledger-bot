@@ -9,11 +9,15 @@ Accounts or Groups in the Subledger are associated to Accounts in the general le
 
 A Subledger may contain, for example, only the details of the [Accounts Receivable](https://help.bkper.com/en/articles/2569170-accounts-receivable) or [Accounts Payable](https://help.bkper.com/en/articles/2569171-accounts-payable) and be shared with a specific department of the business without access to sensitive general ledger account balances and transactions.
 
-[Learn more...](https://help.bkper.com/en/articles/4859083-subledger-bot)
+
 
 ## Configuration
 
-The Subledger bot is triggered on ```TRANSACTION_POSTED``` event, and roll the transaction up to the parent book.
+The Subledger bot is triggered on ```TRANSACTION_POSTED``` event, and roll the transaction up to the parent book.   
+
+All Books that are in the Subledger structure (child & parent books) must be part of one [Collection](https://help.bkper.com/en/articles/4208937-collections).
+
+The Subledger bot must be installed in all the Books of the Subledger structure (child & parent books).
 
 ### Child Book property
 
