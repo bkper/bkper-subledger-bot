@@ -1,5 +1,5 @@
 
-The Subledger Bot connects child books with parent ones, rolling up the Subledger transactions into the parent General Ledger.
+The Subledger automatically connect books in a Ledger-Subledger relationship, synchronizing transactions between parent and child books for consolidated financial reporting.
 
 Accounts or Groups in the Subledger are associated to Accounts in the general ledger, allowing the Subledger a more granular control as well as its user access to only a subset of accounts.
 
