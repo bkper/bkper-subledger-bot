@@ -40,7 +40,7 @@ export abstract class EventHandlerAccount extends EventHandler {
       for (const g of parentAccount.groups) {
         let group = await parentBook.getGroup(g.id);
         if (group.getProperty(CHILD_BOOK_ID_PROP)) {
-          return Bkper.getBook(group.getProperty(CHILD_BOOK_ID_PROP));
+          return this.bkper.getBook(group.getProperty(CHILD_BOOK_ID_PROP));
         }
       }
     }

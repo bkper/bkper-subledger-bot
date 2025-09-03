@@ -17,7 +17,7 @@ export class EventHandlerTransactionDeleted extends EventHandlerTransaction {
       await parentTransaction.uncheck();
     }
 
-    await parentTransaction.remove();
+    await parentTransaction.trash();
 
     let amountFormatted = parentBook.formatValue(parentTransaction.getAmount())
 

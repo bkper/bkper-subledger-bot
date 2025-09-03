@@ -13,7 +13,7 @@ export class EventHandlerTransactionRestored extends EventHandlerTransaction {
   protected async parentTransactionFound(childBook: Book, parentBook: Book, childTransaction: bkper.Transaction, parentTransaction: Transaction): Promise<string> {
     let bookAnchor = super.buildBookAnchor(parentBook);
 
-    await parentTransaction.restore();
+    await parentTransaction.untrash();
 
     let amountFormatted = parentBook.formatValue(parentTransaction.getAmount())
 

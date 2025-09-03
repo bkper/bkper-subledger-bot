@@ -41,7 +41,7 @@ export abstract class EventHandlerGroup extends EventHandler {
 
   private async getChildBook(parentGroup: bkper.Group): Promise<Book> {
     if (parentGroup.properties[CHILD_BOOK_ID_PROP]) {
-      return Bkper.getBook(parentGroup.properties[CHILD_BOOK_ID_PROP]);
+      return this.bkper.getBook(parentGroup.properties[CHILD_BOOK_ID_PROP]);
     }
     return null;
   }

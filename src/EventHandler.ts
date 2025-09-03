@@ -1,7 +1,16 @@
-import { AccountType, Bkper, Book, Group } from "bkper-js";
+import { Bkper, Book, Group } from "bkper-js";
 import { CHILD_BOOK_ID_PROP, PARENT_BOOK_ID_PROP } from "./constants.js";
 
 export abstract class EventHandler {
+
+  private static sharedBkper: Bkper;
+
+  protected get bkper(): Bkper {
+    if (!EventHandler.sharedBkper) {
+      EventHandler.sharedBkper = new Bkper();
+    }
+    return EventHandler.sharedBkper;
+  }
 
   // parent >> child
   protected abstract processParentBookEvent(parentBook: Book, event: bkper.Event): Promise<string>;
@@ -20,7 +29,7 @@ export abstract class EventHandler {
 
     let response = null;
     if (parentBookId) {
-      let parentBook = await Bkper.getBook(parentBookId);
+      let parentBook = await this.bkper.getBook(parentBookId);
       let childBook = baseBook;
       response = await this.processChildBookEvent(childBook, parentBook, event);
     } else {
