@@ -47,7 +47,7 @@ export class EventHandlerTransactionUpdated extends EventHandlerTransaction {
     if (amount) {
       parentTransaction
         .setDate(childTransaction.date)
-        .setProperties(childTransaction.properties)
+        .setProperties(this.getVisibleProperties(childTransaction.properties))
         .setProperty(CHILD_FROM_PROP, childCreditAccount.getName())
         .setProperty(CHILD_TO_PROP, childDebitAccount.getName())
         .setAmount(amount)
