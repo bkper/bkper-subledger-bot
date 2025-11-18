@@ -98,16 +98,6 @@ export abstract class EventHandlerTransaction extends EventHandler {
     }
   }
 
-  protected getVisibleProperties(properties: { [key: string]: string }): { [key: string]: string } {
-    let visibleProperties: { [key: string]: string } = {};
-    for (const [key, value] of Object.entries(properties)) {
-      if (!key.endsWith('_')) {
-        visibleProperties[key] = value as string;
-      }
-    }
-    return visibleProperties;
-  }
-
   protected abstract getTransactionQuery(childTransaction: bkper.Transaction): string;
 
   protected abstract parentTransactionNotFound(childBook: Book, parentBook: Book, childTransaction: bkper.Transaction): Promise<string>;

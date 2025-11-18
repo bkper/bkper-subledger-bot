@@ -9,7 +9,7 @@ export class EventHandlerGroupCreatedOrUpdated extends EventHandlerGroup {
     console.log(`CREATE: ${parentGroup.name}`)
     let childGroup = await new Group(childBook)
       .setName(parentGroup.name)
-      .setProperties(parentGroup.properties)
+      .setProperties(this.getVisibleProperties(parentGroup.properties))
       .deleteProperty(CHILD_BOOK_ID_PROP)
       .create();
     let bookAnchor = super.buildBookAnchor(childBook);
@@ -20,7 +20,7 @@ export class EventHandlerGroupCreatedOrUpdated extends EventHandlerGroup {
     console.log(`UPDATE: ${parentGroup.name}`)
     await childGroup
       .setName(parentGroup.name)
-      .setProperties(parentGroup.properties)
+      .setProperties(this.getVisibleProperties(parentGroup.properties))
       .deleteProperty(CHILD_BOOK_ID_PROP)
       .update();
     let bookAnchor = super.buildBookAnchor(childBook);

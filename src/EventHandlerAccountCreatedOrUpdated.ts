@@ -24,7 +24,7 @@ export class EventHandlerAccountCreatedOrUpdated extends EventHandlerAccount {
     childAccount.setGroups([]);
     childAccount.setName(parentAccount.name)
       .setType(parentAccount.type as AccountType)
-      .setProperties(parentAccount.properties)
+      .setProperties(this.getVisibleProperties(parentAccount.properties))
       .setArchived(parentAccount.archived);
     if (parentAccount.groups) {
       for (const g of parentAccount.groups) {
