@@ -58,14 +58,4 @@ export abstract class EventHandler {
     return null;
   }
 
-  protected getVisibleProperties(properties: { [key: string]: string }): { [key: string]: string } {
-    let visibleProperties: { [key: string]: string } = {};
-    for (const [key, value] of Object.entries(properties)) {
-      if (!key.endsWith('_')) {
-        visibleProperties[key] = value as string;
-      }
-    }
-    return visibleProperties;
-  }
-
 }
