@@ -1,8 +1,12 @@
 import { Account, AccountType, Book } from "bkper-js";
 import { CHILD_BOOK_ID_PROP } from "./constants.js";
 import { EventHandlerAccount } from "./EventHandlerAccount.js";
+import { AppContext } from "./AppContext.js";
 
 export class EventHandlerAccountCreatedOrUpdated extends EventHandlerAccount {
+  constructor(context: AppContext) {
+    super(context);
+  }
 
   // parent >> child
   public async childAccountNotFound(parentBook: Book, childBook: Book, parentAccount: bkper.Account): Promise<string> {

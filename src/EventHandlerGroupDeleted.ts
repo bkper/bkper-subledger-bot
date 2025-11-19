@@ -1,7 +1,11 @@
 import { Account, Book, Group } from "bkper-js";
 import { EventHandlerGroup } from "./EventHandlerGroup.js";
+import { AppContext } from "./AppContext.js";
 
 export class EventHandlerGroupDeleted extends EventHandlerGroup {
+  constructor(context: AppContext) {
+    super(context);
+  }
 
   // parent >> child
   async childGroupNotFound(parentBook: Book, childBook: Book, parentGroup: bkper.Group): Promise<string> {

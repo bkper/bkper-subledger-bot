@@ -1,15 +1,12 @@
-import { Bkper, Book, Group } from "bkper-js";
+import { Book, Group } from "bkper-js";
 import { CHILD_BOOK_ID_PROP, PARENT_BOOK_ID_PROP } from "./constants.js";
+import { AppContext } from "./AppContext.js";
 
 export abstract class EventHandler {
+  protected context: AppContext;
 
-  private static sharedBkper: Bkper;
-
-  protected get bkper(): Bkper {
-    if (!EventHandler.sharedBkper) {
-      EventHandler.sharedBkper = new Bkper();
-    }
-    return EventHandler.sharedBkper;
+  constructor(context: AppContext) {
+      this.context = context;
   }
 
   // parent >> child
@@ -19,7 +16,7 @@ export abstract class EventHandler {
   protected abstract processChildBookEvent(childBook: Book, parentBook: Book, event: bkper.Event): Promise<string>;
 
   async handleEvent(event: bkper.Event): Promise<string | boolean> {
-    let baseBook = new Book(event.book);
+    let baseBook = new Book(event.book, this.context.bkper.getConfig());
     let parentBookId = baseBook.getProperty(PARENT_BOOK_ID_PROP, 'parent_book');
 
     if (event.agent.id == 'exchange-bot') {
@@ -29,7 +26,7 @@ export abstract class EventHandler {
 
     let response = null;
     if (parentBookId) {
-      let parentBook = await this.bkper.getBook(parentBookId);
+      let parentBook = await this.context.bkper.getBook(parentBookId);
       let childBook = baseBook;
       response = await this.processChildBookEvent(childBook, parentBook, event);
     } else {

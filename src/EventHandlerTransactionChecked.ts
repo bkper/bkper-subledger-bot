@@ -1,8 +1,12 @@
-import { Account, Amount, Book, Transaction } from "bkper-js";
-import { CHILD_FROM_PROP, CHILD_TO_PROP, PARENT_AMOUNT } from "./constants.js";
+import { Book, Transaction } from "bkper-js";
+import { CHILD_FROM_PROP, CHILD_TO_PROP } from "./constants.js";
 import { EventHandlerTransaction } from "./EventHandlerTransaction.js";
+import { AppContext } from "./AppContext.js";
 
 export class EventHandlerTransactionChecked extends EventHandlerTransaction {
+  constructor(context: AppContext) {
+    super(context);
+  }
 
   protected getTransactionQuery(transaction: bkper.Transaction): string {
     return `remoteId:${transaction.id}`;

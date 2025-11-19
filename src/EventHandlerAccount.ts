@@ -1,4 +1,4 @@
-import { Account, Bkper, Book } from "bkper-js";
+import { Account, Book } from "bkper-js";
 import { CHILD_BOOK_ID_PROP } from "./constants.js";
 import { EventHandler } from "./EventHandler.js";
 
@@ -40,7 +40,7 @@ export abstract class EventHandlerAccount extends EventHandler {
       for (const g of parentAccount.groups) {
         let group = await parentBook.getGroup(g.id);
         if (group.getProperty(CHILD_BOOK_ID_PROP)) {
-          return this.bkper.getBook(group.getProperty(CHILD_BOOK_ID_PROP));
+          return await this.context.bkper.getBook(group.getProperty(CHILD_BOOK_ID_PROP));
         }
       }
     }
