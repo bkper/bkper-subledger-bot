@@ -13,9 +13,9 @@ dotenv.config({ path: `${__dirname}/.env` });
 
 process.env.NODE_ENV = 'development';
 
+const apiKey = process.env.BKPER_API_KEY;
 Bkper.setConfig({
-  oauthTokenProvider: () => getOAuthToken(),
-  apiKeyProvider: () => process.env.BKPER_API_KEY,
+  oauthTokenProvider: () => getOAuthToken()
 })
 
 const app = new App();
